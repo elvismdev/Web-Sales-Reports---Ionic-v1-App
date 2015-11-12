@@ -1,0 +1,12 @@
+{
+  "name": "WooHooSales",
+  "app_id": "c8c9aa45",
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
+}

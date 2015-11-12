@@ -1,0 +1,22 @@
+<ion-view view-title="WooHøøSales">
+<ion-content>
+
+<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
+
+<div class="card">
+	<div class="item item-divider">
+		Store Name or domain.com
+	</div>
+	<div class="item item-text-wrap">
+		<div class="alert alert-danger" role="alert" ng-show="store_error">{{store_error}}</div>
+		<i class="ion-social-usd"></i> <span class="total-money">{{storeResult()|currency:''}}</span>
+	</div>
+</div>
+
+    <!-- <ion-list>
+      <ion-item ng-repeat="playlist in playlists" href="#/app/playlists/{{playlist.id}}">
+        {{playlist.title}}
+      </ion-item>
+  </ion-list> -->
+</ion-content>
+</ion-view>
