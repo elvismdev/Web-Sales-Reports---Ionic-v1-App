@@ -86,4 +86,14 @@ angular.module('starter.controllers', [])
     return store_sales;
   };
 
+  $scope.singleProduct = function () {
+    if (singleProduct.result.status != 200) {
+      if (singleProduct.result.response) {
+        $scope.singleProduct_error = 'Error ocurred: ' + ' ' + singleProduct.result.status + ' ' + singleProduct.result.response.code + ' ' + singleProduct.result.response.message;
+      }
+    }
+    return singleProduct.hours;
+  };
+
+
 });

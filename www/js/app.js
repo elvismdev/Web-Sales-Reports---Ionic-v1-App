@@ -22,12 +22,56 @@ angular.module('starter', ['ionic', 'starter.controllers'])
               store.result.status = status;
             });
 
-          }
 
-          return {
-           requests: requests
-         };
-       })
+            $http.get(singleProduct.http_method + singleProduct.domain + singleProduct.request + singleProduct.filter, {
+              params: {
+                'consumer_key': singleProduct.consumer_key,
+                'consumer_secret': singleProduct.customer_secret
+              }
+            }).success(function (data, status) {
+              singleProduct.result.response = data;
+              singleProduct.result.status = status;
+
+              var orders = data.orders;
+
+                // Iterate
+                var hours = [];
+                for (var i = 0; i < orders.length; i++) {
+                  var order = orders[i];
+                  var date = new Date(order.created_at);
+
+                    // Convert 24H format into 12H format
+                    date = date.getHours() > 12 ? date.getHours() - 12 + 'pm' : date.getHours() + 'am';
+
+                    var exist = false;
+                    for (var x = 0; x < hours.length; x++) {
+                      if (hours[x].label == date) {
+                        hours[x].value++;
+                        exist = true;
+                        break;
+                      }
+                    }
+
+                    if (exist == false) {
+                      hours.push({
+                        label: date,
+                        value: 1
+                      });
+                    }
+                  }
+
+                  singleProduct.hours = hours;
+                }).error(function (data, status, headers, config) {
+                  singleProduct.result.response = data.errors[0];
+                  singleProduct.result.status = status;
+                });
+
+              }
+
+              return {
+               requests: requests
+             };
+           })
 
 .run(function($ionicPlatform, starterFactory) {
   $ionicPlatform.ready(function() {

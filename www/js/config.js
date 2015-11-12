@@ -13,3 +13,16 @@ var store = {
     'filter': '?filter[created_at_min]=' + date,
     'result': {}
 };
+
+
+// Test v3 Count Orders <Product ID>
+var singleProduct = {
+    'http_method': 'https://',
+    'domain': 'grantcardonetv.com',
+    'version': 'v3',
+    'consumer_key': 'ck_b0fd7ac1322e8e23dd0775da34b6e899', // From WP user profile configuration
+    'customer_secret': 'cs_fd46d7d0fff710cc0d5f46134cc2cb34', // From WP user profile configuration (v3 + &)
+    'request': '/wc-api/v3/products/50118/orders',
+    'filter': '?filter[created_at_min]=' + date,
+    'result': {}
+};

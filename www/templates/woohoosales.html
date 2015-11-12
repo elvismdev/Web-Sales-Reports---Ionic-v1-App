@@ -20,7 +20,12 @@
 		Single Product Report
 	</div>
 	<div class="item item-text-wrap">
-
+		<div class="alert alert-danger" role="alert" ng-show="singleProduct_error">{{singleProduct_error}}</div>
+		<ul class="list">
+			<div ng-repeat="h in singleProduct().slice().reverse()">
+				<li class="item">{{ h.label }} -> {{ h.value }}</li>
+			</div>
+		</ul>
 	</div>
 </div>
 
