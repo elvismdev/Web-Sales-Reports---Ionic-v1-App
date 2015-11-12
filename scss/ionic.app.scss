@@ -27,8 +27,8 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 	margin-right: auto;
 }
 
-button.ion-refresh
+.last-update-time .item-text-wrap
 {
-	@include center-element;
-	margin-top: 10px;
+	font-size: 13px;
+	padding: 4px;
 }

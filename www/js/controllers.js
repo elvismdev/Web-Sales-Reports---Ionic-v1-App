@@ -64,6 +64,7 @@ angular.module('starter.controllers', [])
 .controller('WooHooSalesCtrl', function($scope) {
 
   var store_sales = 0;
+  $scope.now = today.toTimeString();
   $scope.store_error = '';
 
   $scope.storeResult = function () {

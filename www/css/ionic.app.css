@@ -9089,8 +9089,6 @@ a.button {
   -webkit-transition-duration: 0s;
   transition-duration: 0s; }
 
-button.ion-refresh {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 10px; }
+.last-update-time .item-text-wrap {
+  font-size: 13px;
+  padding: 4px; }
