@@ -4,9 +4,69 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers'])
+angular.module('starter', ['ionic', 'starter.controllers', 'lokijs'])
 
-.factory('starterFactory', function($http) {
+.factory('starterFactory', function($http, $q, Loki) {
+
+  var _db;
+  var _birthdays;
+
+  function initDB() {
+    var adapter = new LokiCordovaFSAdapter({"prefix": "loki"});
+    _db = new Loki('birthdaysDB',
+    {
+      autosave: true,
+                    autosaveInterval: 1000, // 1 second
+                    adapter: adapter
+                  });
+  };
+
+  function getAllBirthdays() {
+
+    return $q(function (resolve, reject) {
+
+      var options = {
+        birthdays: {
+          proto: Object,
+          inflate: function (src, dst) {
+            var prop;
+            for (prop in src) {
+              if (prop === 'Date') {
+                dst.Date = new Date(src.Date);
+              } else {
+                dst[prop] = src[prop];
+              }
+            }
+          }
+        }
+      };
+
+      _db.loadDatabase(options, function () {
+        _birthdays = _db.getCollection('birthdays');
+
+        if (!_birthdays) {
+          _birthdays = _db.addCollection('birthdays');
+        }
+
+        resolve(_birthdays.data);
+      });
+    });
+  };
+
+
+  function addBirthday(birthday) {
+    _birthdays.insert(birthday);
+  };
+
+  function updateBirthday(birthday) {
+    _birthdays.update(birthday);
+  };
+
+  function deleteBirthday(birthday) {
+    _birthdays.remove(birthday);
+  };
+
+
   function requests() {
             // HTTPS
             $http.get(store.http_method + store.domain + store.request + store.filter, {
@@ -66,12 +126,21 @@ angular.module('starter', ['ionic', 'starter.controllers'])
                   singleProduct.result.status = status;
                 });
 
-              }
+              };
+
 
               return {
-               requests: requests
-             };
-           })
+                initDB: initDB,
+                getAllBirthdays: getAllBirthdays,
+                addBirthday: addBirthday,
+                updateBirthday: updateBirthday,
+                deleteBirthday: deleteBirthday,
+
+                requests: requests
+              };
+
+
+            })
 
 .run(function($ionicPlatform, starterFactory) {
   $ionicPlatform.ready(function() {
