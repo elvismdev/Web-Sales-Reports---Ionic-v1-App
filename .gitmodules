@@ -1,0 +1,3 @@
+[submodule "www/lib/LokiJS"]
+	path = www/lib/LokiJS
+	url = ../../techfort/LokiJS.git
