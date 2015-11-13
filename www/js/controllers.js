@@ -61,7 +61,7 @@ angular.module('starter.controllers', [])
 .controller('PlaylistCtrl', function($scope, $stateParams) {
 })
 
-.controller('WooHooSalesCtrl', function($scope) {
+.controller('WooReportAppCtrl', function($scope) {
 
   var store_sales = 0;
   $scope.now = today.toTimeString();

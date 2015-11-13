@@ -1,5 +1,5 @@
 {
-  "name": "WooHooSales",
+  "name": "WooReportApp",
   "app_id": "c8c9aa45",
   "gulpStartupTasks": [
     "sass",

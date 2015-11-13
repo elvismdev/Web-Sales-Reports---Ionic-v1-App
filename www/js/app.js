@@ -138,15 +138,15 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     }
   })
 
-  .state('app.woohoosales', {
-    url: '/woohoosales',
+  .state('app.wooreportapp', {
+    url: '/wooreportapp',
     views: {
       'menuContent': {
-        templateUrl: 'templates/woohoosales.html',
-        controller: 'WooHooSalesCtrl'
+        templateUrl: 'templates/wooreportapp.html',
+        controller: 'WooReportAppCtrl'
       }
     }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/woohoosales');
+  $urlRouterProvider.otherwise('/app/wooreportapp');
 });
