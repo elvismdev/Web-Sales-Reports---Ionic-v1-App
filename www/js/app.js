@@ -12,13 +12,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'lokijs'])
   var _birthdays;
 
   function initDB() {
-    var adapter = new LokiCordovaFSAdapter({"prefix": "loki"});
+    // var adapter = new LokiCordovaFSAdapter({"prefix": "loki"});
     _db = new Loki('birthdaysDB',
     {
       autosave: true,
-                    autosaveInterval: 1000, // 1 second
-                    adapter: adapter
-                  });
+      autosaveInterval: 1000 // 1 second
+      // adapter: adapter
+    });
   };
 
   function getAllBirthdays() {
@@ -83,64 +83,64 @@ angular.module('starter', ['ionic', 'starter.controllers', 'lokijs'])
             });
 
 
-            $http.get(singleProduct.http_method + singleProduct.domain + singleProduct.request + singleProduct.filter, {
-              params: {
-                'consumer_key': singleProduct.consumer_key,
-                'consumer_secret': singleProduct.customer_secret
-              }
-            }).success(function (data, status) {
-              singleProduct.result.response = data;
-              singleProduct.result.status = status;
+            // $http.get(singleProduct.http_method + singleProduct.domain + singleProduct.request + singleProduct.filter, {
+            //   params: {
+            //     'consumer_key': singleProduct.consumer_key,
+            //     'consumer_secret': singleProduct.customer_secret
+            //   }
+            // }).success(function (data, status) {
+            //   singleProduct.result.response = data;
+            //   singleProduct.result.status = status;
 
-              var orders = data.orders;
+            //   var orders = data.orders;
 
-                // Iterate
-                var hours = [];
-                for (var i = 0; i < orders.length; i++) {
-                  var order = orders[i];
-                  var date = new Date(order.created_at);
+            //     // Iterate
+            //     var hours = [];
+            //     for (var i = 0; i < orders.length; i++) {
+            //       var order = orders[i];
+            //       var date = new Date(order.created_at);
 
-                    // Convert 24H format into 12H format
-                    date = date.getHours() > 12 ? date.getHours() - 12 + 'pm' : date.getHours() + 'am';
+            //         // Convert 24H format into 12H format
+            //         date = date.getHours() > 12 ? date.getHours() - 12 + 'pm' : date.getHours() + 'am';
 
-                    var exist = false;
-                    for (var x = 0; x < hours.length; x++) {
-                      if (hours[x].label == date) {
-                        hours[x].value++;
-                        exist = true;
-                        break;
-                      }
-                    }
+            //         var exist = false;
+            //         for (var x = 0; x < hours.length; x++) {
+            //           if (hours[x].label == date) {
+            //             hours[x].value++;
+            //             exist = true;
+            //             break;
+            //           }
+            //         }
 
-                    if (exist == false) {
-                      hours.push({
-                        label: date,
-                        value: 1
-                      });
-                    }
-                  }
+            //         if (exist == false) {
+            //           hours.push({
+            //             label: date,
+            //             value: 1
+            //           });
+            //         }
+            //       }
 
-                  singleProduct.hours = hours;
-                }).error(function (data, status, headers, config) {
-                  singleProduct.result.response = data.errors[0];
-                  singleProduct.result.status = status;
-                });
+            //       singleProduct.hours = hours;
+            //     }).error(function (data, status, headers, config) {
+            //       singleProduct.result.response = data.errors[0];
+            //       singleProduct.result.status = status;
+            //     });
 
-              };
-
-
-              return {
-                initDB: initDB,
-                getAllBirthdays: getAllBirthdays,
-                addBirthday: addBirthday,
-                updateBirthday: updateBirthday,
-                deleteBirthday: deleteBirthday,
-
-                requests: requests
-              };
+};
 
 
-            })
+return {
+  initDB: initDB,
+  getAllBirthdays: getAllBirthdays,
+  addBirthday: addBirthday,
+  updateBirthday: updateBirthday,
+  deleteBirthday: deleteBirthday,
+
+  requests: requests
+};
+
+
+})
 
 .run(function($ionicPlatform, starterFactory) {
   $ionicPlatform.ready(function() {
@@ -187,12 +187,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'lokijs'])
     }
   })
 
-  .state('app.playlists', {
-    url: '/playlists',
+  .state('app.bdays', {
+    url: '/bdays',
     views: {
       'menuContent': {
-        templateUrl: 'templates/playlists.html',
-        controller: 'PlaylistsCtrl'
+        templateUrl: 'templates/bdays.html',
+        controller: 'BDayCtrl'
       }
     }
   })

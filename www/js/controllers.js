@@ -47,6 +47,9 @@ angular.module('starter.controllers', [])
 
 })
 
+
+
+
 .controller('PlaylistsCtrl', function($scope) {
   $scope.playlists = [
   { title: 'Reggae', id: 1 },
@@ -58,8 +61,16 @@ angular.module('starter.controllers', [])
   ];
 })
 
+
+
+
+
 .controller('PlaylistCtrl', function($scope, $stateParams) {
 })
+
+
+
+
 
 .controller('WooReportAppCtrl', function($scope) {
 
@@ -96,4 +107,67 @@ angular.module('starter.controllers', [])
   };
 
 
-});
+})
+
+
+
+
+
+
+.controller('BDayCtrl', function($scope, $ionicModal, $ionicPlatform, starterFactory) {
+
+  $ionicPlatform.ready(function() {
+
+        // Initialize the database.
+        starterFactory.initDB();
+
+        // Get all birthday records from the database.
+        starterFactory.getAllBirthdays()
+        .then(function (birthdays) {
+          $scope.birthdays = birthdays;
+        });
+      });
+
+
+    // Initialize the modal view.
+    $ionicModal.fromTemplateUrl('templates/addbdaymodal.html', {
+      scope: $scope
+      // animation: 'slide-in-up'
+    }).then(function(modal) {
+      $scope.modal = modal;
+    });
+
+
+    $scope.showAddBirthdayModal = function() {
+      $scope.birthday = {};
+      $scope.action = 'Add';
+      $scope.isAdd = true;
+      $scope.modal.show();
+    };
+
+    $scope.showEditBirthdayModal = function(birthday) {
+      $scope.birthday = birthday;
+      $scope.action = 'Edit';
+      $scope.isAdd = false;
+      $scope.modal.show();
+    };
+
+    $scope.saveBirthday = function() {
+      if ($scope.isAdd) {
+        starterFactory.addBirthday($scope.birthday);
+      } else {
+        starterFactory.updateBirthday($scope.birthday);
+      }
+      $scope.modal.hide();
+    };
+
+    $scope.deleteBirthday = function() {
+      starterFactory.deleteBirthday($scope.birthday);
+      $scope.modal.hide();
+    };
+
+    $scope.$on('$destroy', function() {
+      $scope.modal.remove();
+    });
+
+  });
