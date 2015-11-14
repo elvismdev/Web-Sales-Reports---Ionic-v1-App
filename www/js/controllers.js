@@ -132,7 +132,6 @@ angular.module('starter.controllers', [])
     // Initialize the modal view.
     $ionicModal.fromTemplateUrl('templates/addbdaymodal.html', {
       scope: $scope
-      // animation: 'slide-in-up'
     }).then(function(modal) {
       $scope.modal = modal;
     });
