@@ -68,22 +68,31 @@ angular.module('starter', ['ionic', 'starter.controllers', 'lokijs'])
 
 
   function requests() {
-            // HTTPS
-            $http.get(store.http_method + store.domain + store.request + store.filter, {
-              params: {
-                'consumer_key': store.consumer_key,
-                'consumer_secret': store.customer_secret
-              }
-            }).success(function (data, status) {
-              store.result.response = data;
-              store.result.status = status;
-            }).error(function (data, status, headers, config) {
-              store.result.response = data.errors[0];
-              store.result.status = status;
-            });
+
+    // Initialize the database.
+    this.initDB();
+
+    this.getAllStores()
+    .then(function (stores) {
+
+      // HTTPS
+      $http.get(store.http_method + stores[0].Domain + store.request + store.filter, {
+        params: {
+          'consumer_key': store.consumer_key,
+          'consumer_secret': store.customer_secret
+        }
+      }).success(function (data, status) {
+        store.result.response = data;
+        store.result.status = status;
+      }).error(function (data, status, headers, config) {
+        store.result.response = data.errors[0];
+        store.result.status = status;
+      });
 
 
-            // $http.get(singleProduct.http_method + singleProduct.domain + singleProduct.request + singleProduct.filter, {
+
+
+      // $http.get(singleProduct.http_method + singleProduct.domain + singleProduct.request + singleProduct.filter, {
             //   params: {
             //     'consumer_key': singleProduct.consumer_key,
             //     'consumer_secret': singleProduct.customer_secret
@@ -125,6 +134,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'lokijs'])
             //       singleProduct.result.response = data.errors[0];
             //       singleProduct.result.status = status;
             //     });
+
+
+
+});
 
 };
 

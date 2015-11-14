@@ -169,6 +169,6 @@ angular.module('starter.controllers', [])
       $scope.modal.remove();
     });
 
-    console.log($scope);
+    // console.log($scope);
 
   });
