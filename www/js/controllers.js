@@ -114,59 +114,61 @@ angular.module('starter.controllers', [])
 
 
 
-.controller('BDayCtrl', function($scope, $ionicModal, $ionicPlatform, starterFactory) {
+.controller('StoreCtrl', function($scope, $ionicModal, $ionicPlatform, starterFactory) {
 
   $ionicPlatform.ready(function() {
 
         // Initialize the database.
         starterFactory.initDB();
 
-        // Get all birthday records from the database.
-        starterFactory.getAllBirthdays()
-        .then(function (birthdays) {
-          $scope.birthdays = birthdays;
+        // Get all store records from the database.
+        starterFactory.getAllStores()
+        .then(function (stores) {
+          $scope.stores = stores;
         });
       });
 
 
     // Initialize the modal view.
-    $ionicModal.fromTemplateUrl('templates/addbdaymodal.html', {
+    $ionicModal.fromTemplateUrl('templates/addstoremodal.html', {
       scope: $scope
     }).then(function(modal) {
       $scope.modal = modal;
     });
 
 
-    $scope.showAddBirthdayModal = function() {
-      $scope.birthday = {};
+    $scope.showAddStoreModal = function() {
+      $scope.store = {};
       $scope.action = 'Add';
       $scope.isAdd = true;
       $scope.modal.show();
     };
 
-    $scope.showEditBirthdayModal = function(birthday) {
-      $scope.birthday = birthday;
+    $scope.showEditStoreModal = function(store) {
+      $scope.store = store;
       $scope.action = 'Edit';
       $scope.isAdd = false;
       $scope.modal.show();
     };
 
-    $scope.saveBirthday = function() {
+    $scope.saveStore = function() {
       if ($scope.isAdd) {
-        starterFactory.addBirthday($scope.birthday);
+        starterFactory.addStore($scope.store);
       } else {
-        starterFactory.updateBirthday($scope.birthday);
+        starterFactory.updateStore($scope.store);
       }
       $scope.modal.hide();
     };
 
-    $scope.deleteBirthday = function() {
-      starterFactory.deleteBirthday($scope.birthday);
+    $scope.deleteStore = function() {
+      starterFactory.deleteStore($scope.store);
       $scope.modal.hide();
     };
 
     $scope.$on('$destroy', function() {
       $scope.modal.remove();
     });
+
+    console.log($scope);
 
   });

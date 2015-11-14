@@ -9,11 +9,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'lokijs'])
 .factory('starterFactory', function($http, $q, Loki) {
 
   var _db;
-  var _birthdays;
+  var _stores;
 
   function initDB() {
     // var adapter = new LokiCordovaFSAdapter({"prefix": "loki"});
-    _db = new Loki('birthdaysDB',
+    _db = new Loki('storesDB',
     {
       autosave: true,
       autosaveInterval: 1000 // 1 second
@@ -21,12 +21,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'lokijs'])
     });
   };
 
-  function getAllBirthdays() {
+  function getAllStores() {
 
     return $q(function (resolve, reject) {
 
       var options = {
-        birthdays: {
+        stores: {
           proto: Object,
           inflate: function (src, dst) {
             var prop;
@@ -42,28 +42,28 @@ angular.module('starter', ['ionic', 'starter.controllers', 'lokijs'])
       };
 
       _db.loadDatabase(options, function () {
-        _birthdays = _db.getCollection('birthdays');
+        _stores = _db.getCollection('stores');
 
-        if (!_birthdays) {
-          _birthdays = _db.addCollection('birthdays');
+        if (!_stores) {
+          _stores = _db.addCollection('stores');
         }
 
-        resolve(_birthdays.data);
+        resolve(_stores.data);
       });
     });
   };
 
 
-  function addBirthday(birthday) {
-    _birthdays.insert(birthday);
+  function addStore(store) {
+    _stores.insert(store);
   };
 
-  function updateBirthday(birthday) {
-    _birthdays.update(birthday);
+  function updateStore(store) {
+    _stores.update(store);
   };
 
-  function deleteBirthday(birthday) {
-    _birthdays.remove(birthday);
+  function deleteStore(store) {
+    _stores.remove(store);
   };
 
 
@@ -131,11 +131,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'lokijs'])
 
 return {
   initDB: initDB,
-  getAllBirthdays: getAllBirthdays,
-  addBirthday: addBirthday,
-  updateBirthday: updateBirthday,
-  deleteBirthday: deleteBirthday,
-
+  getAllStores: getAllStores,
+  addStore: addStore,
+  updateStore: updateStore,
+  deleteStore: deleteStore,
   requests: requests
 };
 
@@ -187,12 +186,12 @@ return {
     }
   })
 
-  .state('app.bdays', {
-    url: '/bdays',
+  .state('app.stores', {
+    url: '/stores',
     views: {
       'menuContent': {
-        templateUrl: 'templates/bdays.html',
-        controller: 'BDayCtrl'
+        templateUrl: 'templates/stores.html',
+        controller: 'StoreCtrl'
       }
     }
   })

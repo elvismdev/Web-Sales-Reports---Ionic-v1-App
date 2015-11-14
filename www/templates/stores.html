@@ -1,0 +1,12 @@
+<ion-view view-title="Stores">
+<ion-content>
+<div class="buttons">
+	<button ng-click="showAddStoreModal()" class="button button-icon icon ion-plus"></button>
+</div>
+<ion-list>
+<ion-item ng-repeat="s in stores" ng-click="showEditStoreModal(s)">
+<div style="float: left">{{ s.Name }}</div>
+</ion-item>
+</ion-list>
+</ion-content>
+</ion-view>
