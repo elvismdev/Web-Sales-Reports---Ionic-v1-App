@@ -72,7 +72,7 @@ angular.module('starter.controllers', [])
 
 
 
-.controller('WooReportAppCtrl', function($scope) {
+.controller('WooReportAppCtrl', function($scope, starterFactory) {
 
   var store_sales = 0;
   $scope.now = today.toTimeString();
@@ -104,6 +104,10 @@ angular.module('starter.controllers', [])
       }
     }
     return singleProduct.hours;
+  };
+
+  $scope.storeName = function () {
+    return store.name;
   };
 
 

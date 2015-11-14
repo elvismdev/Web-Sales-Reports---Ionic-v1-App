@@ -72,11 +72,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'lokijs'])
     // Initialize the database.
     this.initDB();
 
+    // Get all store records from the database.
     this.getAllStores()
     .then(function (stores) {
 
+      storeID = 0; // This is hardcoded by now, we'll gonna make it later to get this ID dinamically from the request.
+      store.name = stores[storeID].Name;
+      store.domain = stores[storeID].Domain;
+
       // HTTPS
-      $http.get(store.http_method + stores[0].Domain + store.request + store.filter, {
+      $http.get(store.http_method + store.domain + store.request + store.filter, {
         params: {
           'consumer_key': store.consumer_key,
           'consumer_secret': store.customer_secret
