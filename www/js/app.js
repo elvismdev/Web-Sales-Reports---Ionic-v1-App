@@ -133,22 +133,24 @@ angular.module('wooreport', ['ionic', 'wooreport.controllers', 'lokijs'])
             //     });
 
 
-    });
+});
 
-  };
+};
 
 
-  return {
-    initDB: initDB,
-    getAllStores: getAllStores,
-    addStore: addStore,
-    updateStore: updateStore,
-    deleteStore: deleteStore,
-    requests: requests
-  };
+return {
+  initDB: initDB,
+  getAllStores: getAllStores,
+  addStore: addStore,
+  updateStore: updateStore,
+  deleteStore: deleteStore,
+  requests: requests
+};
 
 
 })
+
+
 
 .run(function($ionicPlatform, wooreportFactory) {
   $ionicPlatform.ready(function() {
@@ -166,7 +168,9 @@ angular.module('wooreport', ['ionic', 'wooreport.controllers', 'lokijs'])
   });
 })
 
+
 .config(function($stateProvider, $urlRouterProvider) {
+
   $stateProvider
 
   .state('app', {
@@ -224,5 +228,7 @@ angular.module('wooreport', ['ionic', 'wooreport.controllers', 'lokijs'])
     }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/wooreportapp');
+  $urlRouterProvider.otherwise(function() {
+    return '/app/wooreportapp';
+  });
 });
