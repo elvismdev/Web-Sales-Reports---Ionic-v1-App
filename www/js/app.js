@@ -47,7 +47,6 @@ angular.module('wooreport', ['ionic', 'wooreport.controllers', 'lokijs'])
     });
   };
 
-
   function addStore(store) {
     _stores.insert(store);
   };
@@ -59,7 +58,6 @@ angular.module('wooreport', ['ionic', 'wooreport.controllers', 'lokijs'])
   function deleteStore(store) {
     _stores.remove(store);
   };
-
 
   function requests() {
 
@@ -137,7 +135,6 @@ angular.module('wooreport', ['ionic', 'wooreport.controllers', 'lokijs'])
 
 };
 
-
 return {
   initDB: initDB,
   getAllStores: getAllStores,
@@ -146,30 +143,20 @@ return {
   deleteStore: deleteStore,
   requests: requests
 };
+})
 
+.provider('woo', function () {
+
+  // Check for DB Store (for default route)
+  this.existStore = function() {
+    return false;
+  };
+
+  this.$get = function() {};
 
 })
 
-
-
-.run(function($ionicPlatform) {
-  $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
-  if (window.cordova && window.cordova.plugins.Keyboard) {
-    cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-    cordova.plugins.Keyboard.disableScroll(true);
-
-  }
-  if (window.StatusBar) {
-      // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
-    }
-  });
-})
-
-
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function(wooProvider, $stateProvider, $urlRouterProvider) {
 
   $stateProvider
 
@@ -227,9 +214,37 @@ return {
       }
     }
   });
-  // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider
-  .otherwise(function() {
+
+  var stores = function () {
+    return '/app/stores';
+  };
+
+  var wooreportapp = function () {
     return '/app/wooreportapp';
+  };
+
+  // if none of the above states are matched, use this as the fallback
+  if (wooProvider.existStore()) {
+    $urlRouterProvider
+        .otherwise(wooreportapp);
+  } else {
+    $urlRouterProvider
+        .otherwise(stores);
+  }
+})
+
+.run(function($ionicPlatform) {
+  $ionicPlatform.ready(function() {
+    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+    // for form inputs)
+    if (window.cordova && window.cordova.plugins.Keyboard) {
+      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+      cordova.plugins.Keyboard.disableScroll(true);
+
+    }
+    if (window.StatusBar) {
+      // org.apache.cordova.statusbar required
+      StatusBar.styleDefault();
+    }
   });
 });
