@@ -1,6 +1,6 @@
-angular.module('starter.controllers', [])
+angular.module('wooreport.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, starterFactory) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, wooreportFactory) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -41,7 +41,7 @@ angular.module('starter.controllers', [])
   };
 
   $scope.doRefresh = function() {
-    starterFactory.requests();
+    wooreportFactory.requests();
     $scope.$broadcast('scroll.refreshComplete');
   };
 
@@ -72,7 +72,7 @@ angular.module('starter.controllers', [])
 
 
 
-.controller('WooReportAppCtrl', function($scope, starterFactory) {
+.controller('WooReportAppCtrl', function($scope, wooreportFactory) {
 
   var store_sales = 0;
   $scope.now = today.toTimeString();
@@ -118,15 +118,15 @@ angular.module('starter.controllers', [])
 
 
 
-.controller('StoreCtrl', function($scope, $ionicModal, $ionicPlatform, starterFactory) {
+.controller('StoreCtrl', function($scope, $ionicModal, $ionicPlatform, wooreportFactory) {
 
   $ionicPlatform.ready(function() {
 
         // Initialize the database.
-        starterFactory.initDB();
+        wooreportFactory.initDB();
 
         // Get all store records from the database.
-        starterFactory.getAllStores()
+        wooreportFactory.getAllStores()
         .then(function (stores) {
           $scope.stores = stores;
         });
@@ -157,15 +157,15 @@ angular.module('starter.controllers', [])
 
     $scope.saveStore = function() {
       if ($scope.isAdd) {
-        starterFactory.addStore($scope.store);
+        wooreportFactory.addStore($scope.store);
       } else {
-        starterFactory.updateStore($scope.store);
+        wooreportFactory.updateStore($scope.store);
       }
       $scope.modal.hide();
     };
 
     $scope.deleteStore = function() {
-      starterFactory.deleteStore($scope.store);
+      wooreportFactory.deleteStore($scope.store);
       $scope.modal.hide();
     };
 
