@@ -72,11 +72,15 @@ angular.module('wooreport.controllers', [])
 
 
 
-.controller('WooReportAppCtrl', function($scope, wooreportFactory) {
+.controller('WooReportAppCtrl', function($scope, $ionicPlatform, wooreportFactory) {
 
   var store_sales = 0;
   $scope.now = today.toTimeString();
   $scope.store_error = '';
+
+  $ionicPlatform.ready(function() {
+    wooreportFactory.requests();
+  });
 
   $scope.storeResult = function () {
     if (store.result.status != 200) {

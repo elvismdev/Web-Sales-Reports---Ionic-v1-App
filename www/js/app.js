@@ -11,7 +11,7 @@ angular.module('wooreport', ['ionic', 'wooreport.controllers', 'lokijs'])
     {
       autosave: true,
       autosaveInterval: 1000, // 1 second
-      // adapter: adapter
+      adapter: adapter
     });
   };
 
@@ -89,8 +89,6 @@ angular.module('wooreport', ['ionic', 'wooreport.controllers', 'lokijs'])
       });
 
 
-
-
       // $http.get(singleProduct.http_method + singleProduct.domain + singleProduct.request + singleProduct.filter, {
             //   params: {
             //     'consumer_key': singleProduct.consumer_key,
@@ -135,20 +133,19 @@ angular.module('wooreport', ['ionic', 'wooreport.controllers', 'lokijs'])
             //     });
 
 
+    });
 
-});
-
-};
+  };
 
 
-return {
-  initDB: initDB,
-  getAllStores: getAllStores,
-  addStore: addStore,
-  updateStore: updateStore,
-  deleteStore: deleteStore,
-  requests: requests
-};
+  return {
+    initDB: initDB,
+    getAllStores: getAllStores,
+    addStore: addStore,
+    updateStore: updateStore,
+    deleteStore: deleteStore,
+    requests: requests
+  };
 
 
 })
@@ -166,8 +163,7 @@ return {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-  })
-  wooreportFactory.requests();
+  });
 })
 
 .config(function($stateProvider, $urlRouterProvider) {
