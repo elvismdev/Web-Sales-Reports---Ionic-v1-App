@@ -12,12 +12,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'lokijs'])
   var _stores;
 
   function initDB() {
-    var adapter = new LokiCordovaFSAdapter({"prefix": "loki"});
+    // var adapter = new LokiCordovaFSAdapter({"prefix": "loki"});
     _db = new Loki('storesDB',
     {
       autosave: true,
-      autosaveInterval: 1000, // 1 second
-      adapter: adapter
+      autosaveInterval: 1000 // 1 second
+      // adapter: adapter
     });
   };
 
