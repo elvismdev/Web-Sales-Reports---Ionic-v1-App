@@ -226,25 +226,39 @@ return {
   // if none of the above states are matched, use this as the fallback
   if (wooProvider.existStore()) {
     $urlRouterProvider
-        .otherwise(wooreportapp);
+    .otherwise(wooreportapp);
   } else {
     $urlRouterProvider
-        .otherwise(stores);
+    .otherwise(stores);
   }
 })
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $state, wooreportFactory) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
-    if (window.cordova && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-      cordova.plugins.Keyboard.disableScroll(true);
+  if (window.cordova && window.cordova.plugins.Keyboard) {
+    cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+    cordova.plugins.Keyboard.disableScroll(true);
 
-    }
-    if (window.StatusBar) {
+  }
+  if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+    // Initialize the database.
+    wooreportFactory.initDB();
+
+    // Get all store records from the database.
+    wooreportFactory.getAllStores()
+    .then(function (stores) {
+
+      if ( stores.length <= 0 ) {
+        $state.go('app.stores');
+      }
+
+    });
+
   });
 });
