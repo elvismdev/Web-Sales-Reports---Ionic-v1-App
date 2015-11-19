@@ -122,7 +122,7 @@ angular.module('wooreport.controllers', [])
 
 
 
-.controller('StoreCtrl', function($scope, $ionicModal, $ionicPlatform, wooreportFactory) {
+.controller('StoreCtrl', function($scope, $ionicModal, $ionicPlatform, wooreportFactory, $stateParams) {
 
   $ionicPlatform.ready(function() {
 
@@ -142,6 +142,8 @@ angular.module('wooreport.controllers', [])
       scope: $scope
     }).then(function(modal) {
       $scope.modal = modal;
+      if ( $stateParams.noStores === true )
+        $scope.showAddStoreModal();
     });
 
 
@@ -177,6 +179,5 @@ angular.module('wooreport.controllers', [])
       $scope.modal.remove();
     });
 
-    // console.log($scope);
 
   });
