@@ -1,6 +1,6 @@
 angular.module('wooreport', ['ionic', 'wooreport.controllers', 'lokijs'])
 
-.factory('wooreportFactory', function($http, $q, Loki) {
+.factory('wooreportFactory', function($http, $q, Loki, $state) {
 
   var _db;
   var _stores;
@@ -11,7 +11,7 @@ angular.module('wooreport', ['ionic', 'wooreport.controllers', 'lokijs'])
     {
       autosave: true,
       autosaveInterval: 1000, // 1 second
-      adapter: adapter
+      // adapter: adapter
     });
   };
 
@@ -67,6 +67,10 @@ angular.module('wooreport', ['ionic', 'wooreport.controllers', 'lokijs'])
     // Get all store records from the database.
     this.getAllStores()
     .then(function (stores) {
+
+      if ( stores.length <= 0 ) {
+        return $state.go( 'app.stores', { noStores: true } );
+      }
 
       storeID = 0; // This is hardcoded by now, we'll gonna make it later to get this ID dinamically from the request.
       store.name = stores[storeID].Name;
@@ -145,18 +149,8 @@ return {
 };
 })
 
-.provider('woo', function () {
 
-  // Check for DB Store (for default route)
-  this.existStore = function() {
-    return false;
-  };
-
-  this.$get = function() {};
-
-})
-
-.config(function(wooProvider, $stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider) {
 
   $stateProvider
 
@@ -186,6 +180,9 @@ return {
   })
 
   .state('app.stores', {
+    params: {
+      noStores: false
+    },
     url: '/stores',
     views: {
       'menuContent': {
@@ -215,25 +212,11 @@ return {
     }
   });
 
-  var stores = function () {
-    return '/app/stores';
-  };
-
-  var wooreportapp = function () {
-    return '/app/wooreportapp';
-  };
-
-  // if none of the above states are matched, use this as the fallback
-  if (wooProvider.existStore()) {
-    $urlRouterProvider
-    .otherwise(wooreportapp);
-  } else {
-    $urlRouterProvider
-    .otherwise(stores);
-  }
+  $urlRouterProvider
+  .otherwise('/app/wooreportapp');
 })
 
-.run(function($ionicPlatform, $state, wooreportFactory) {
+.run(function($ionicPlatform, $state) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -246,19 +229,6 @@ return {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-
-    // Initialize the database.
-    wooreportFactory.initDB();
-
-    // Get all store records from the database.
-    wooreportFactory.getAllStores()
-    .then(function (stores) {
-
-      if ( stores.length <= 0 ) {
-        $state.go('app.stores');
-      }
-
-    });
 
   });
 });
