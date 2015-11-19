@@ -124,7 +124,6 @@ angular.module('wooreport.controllers', [])
 
 .controller('StoreCtrl', function($scope, $ionicModal, $ionicPlatform, wooreportFactory, $stateParams) {
 
-
   $ionicPlatform.ready(function() {
 
         // Initialize the database.
