@@ -78,10 +78,6 @@ angular.module('wooreport.controllers', [])
   $scope.now = today.toTimeString();
   $scope.store_error = '';
 
-  $ionicPlatform.ready(function() {
-    wooreportFactory.requests();
-  });
-
   $scope.storeResult = function () {
     if (store.result.status != 200) {
       if (store.result.response) {
