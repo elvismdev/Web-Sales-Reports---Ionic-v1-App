@@ -209,6 +209,11 @@ return {
         templateUrl: 'templates/wooreportapp.html',
         controller: 'WooReportAppCtrl'
       }
+    },
+    resolve: {
+      check: function(wooreportFactory) {
+        wooreportFactory.requests();
+      }
     }
   });
 
