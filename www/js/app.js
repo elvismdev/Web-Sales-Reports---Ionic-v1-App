@@ -218,7 +218,9 @@ return {
   });
 
   $urlRouterProvider
-  .otherwise('/app/wooreportapp');
+  .otherwise(function() {
+    return '/app/wooreportapp';
+  });
 })
 
 .run(function($ionicPlatform, $state) {
