@@ -2,20 +2,31 @@
 <ion-header-bar>
 <h1 class="title">{{ action }} Store</h1>
 <div class="buttons">
-  <button ng-hide="isAdd" ng-click="deleteStore()" class="button button-icon icon ion-trash-a"></button>
+	<button ng-hide="isAdd" ng-click="deleteStore()" class="button button-icon icon ion-trash-a"></button>
 </div>
 </ion-header-bar>
 <ion-content>
-<div class="list list-inset">
-  <label class="item item-input">
-    <input type="text" placeholder="Store Name" ng-model="store.Name">
-  </label>
-  <label class="item item-input">
-    <input type="text" placeholder="Domain" ng-model="store.Domain">
-  </label>
-</div>
-<div class="padding">
-  <button ng-click="saveStore()" class="button button-block button-positive activated">Save</button>
-</div>
+<script type="text/ng-template" id="error-messages">
+	<div class="form-error" ng-message="required">This field is required</div>
+</script>
+<form name="addStoreForm">
+	<div class="list list-inset">
+		<label class="item item-input" ng-class="{ 'has-error' : addStoreForm.storeNameField.$invalid }">
+			<input type="text" placeholder="Store Name" ng-model="store.Name" name="storeNameField" required>
+		</label>
+		<div class="form-errors" ng-messages="addStoreForm.storeNameField.$error" role="alert">
+			<div class="form-error" ng-messages-include="error-messages"></div>
+		</div>
+		<label class="item item-input" ng-class="{ 'has-error' : addStoreForm.storeUrlField.$invalid }">
+			<input type="text" placeholder="Domain" ng-model="store.Domain" name="storeUrlField" required>
+		</label>
+		<div class="form-errors" ng-messages="addStoreForm.storeUrlField.$error" ng-if='submitted' role="alert">
+			<div class="form-error" ng-messages-include="error-messages"></div>
+		</div>
+	</div>
+	<div class="padding">
+		<button ng-click="saveStore()" class="button button-block button-positive activated">Save</button>
+	</div>
+</form>
 </ion-content>
 </ion-modal-view>
