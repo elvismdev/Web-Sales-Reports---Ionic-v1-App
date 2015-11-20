@@ -1,6 +1,6 @@
-angular.module('wooreport', ['ionic', 'wooreport.controllers', 'lokijs'])
+angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs'])
 
-.factory('wooreportFactory', function($http, $q, Loki, $state) {
+.factory('wooFactory', function($http, $q, Loki, $state) {
 
   var _db;
   var _stores;
@@ -69,7 +69,7 @@ angular.module('wooreport', ['ionic', 'wooreport.controllers', 'lokijs'])
     .then(function (stores) {
 
       if ( stores.length <= 0 ) {
-        return $state.go( 'app.stores', { noStores: true } );
+        return $state.go( 'app.stores' );
       }
 
       storeID = 0; // This is hardcoded by now, we'll gonna make it later to get this ID dinamically from the request.
@@ -180,9 +180,6 @@ return {
   })
 
   .state('app.stores', {
-    params: {
-      noStores: false
-    },
     url: '/stores',
     views: {
       'menuContent': {
@@ -202,24 +199,24 @@ return {
     }
   })
 
-  .state('app.wooreportapp', {
-    url: '/wooreportapp',
+  .state('app.overview', {
+    url: '/overview',
     views: {
       'menuContent': {
-        templateUrl: 'templates/wooreportapp.html',
-        controller: 'WooReportAppCtrl'
+        templateUrl: 'templates/overview.html',
+        controller: 'WooShopAppCtrl'
       }
     },
     resolve: {
-      check: function(wooreportFactory) {
-        wooreportFactory.requests();
+      check: function(wooFactory) {
+        wooFactory.requests();
       }
     }
   });
 
   $urlRouterProvider
   .otherwise(function() {
-    return '/app/wooreportapp';
+    return '/app/overview';
   });
 })
 
