@@ -1,7 +1,7 @@
 {
-  "name": "wooreportapp",
+  "name": "wooshopapp",
   "version": "1.1.1",
-  "description": "WooReportApp: An Ionic project",
+  "description": "WooShop App: View sales reports and more from your WooCommerce online stores",
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-sass": "^2.0.4",

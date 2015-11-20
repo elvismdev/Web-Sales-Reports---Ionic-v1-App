@@ -1,6 +1,6 @@
-angular.module('wooreport.controllers', [])
+angular.module('wooshop.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, wooreportFactory) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, wooFactory) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -41,7 +41,7 @@ angular.module('wooreport.controllers', [])
   };
 
   $scope.doRefresh = function() {
-    wooreportFactory.requests();
+    wooFactory.requests();
     $scope.$broadcast('scroll.refreshComplete');
   };
 
@@ -72,7 +72,7 @@ angular.module('wooreport.controllers', [])
 
 
 
-.controller('WooReportAppCtrl', function($scope, $ionicPlatform, wooreportFactory) {
+.controller('WooShopAppCtrl', function($scope, $ionicPlatform, wooFactory) {
 
   var store_sales = 0;
   $scope.now = today.toTimeString();
@@ -118,15 +118,15 @@ angular.module('wooreport.controllers', [])
 
 
 
-.controller('StoreCtrl', function($scope, $ionicModal, $ionicPlatform, wooreportFactory, $stateParams) {
+.controller('StoreCtrl', function($scope, $ionicModal, $ionicPlatform, wooFactory, $stateParams) {
 
   $ionicPlatform.ready(function() {
 
         // Initialize the database.
-        wooreportFactory.initDB();
+        wooFactory.initDB();
 
         // Get all store records from the database.
-        wooreportFactory.getAllStores()
+        wooFactory.getAllStores()
         .then(function (stores) {
           $scope.stores = stores;
         });
@@ -137,9 +137,12 @@ angular.module('wooreport.controllers', [])
     $ionicModal.fromTemplateUrl('templates/addstoremodal.html', {
       scope: $scope
     }).then(function(modal) {
+
       $scope.modal = modal;
-      if ( $stateParams.noStores === true )
+
+      if ( $scope.stores.length <= 0 )
         $scope.showAddStoreModal();
+
     });
 
 
@@ -159,15 +162,15 @@ angular.module('wooreport.controllers', [])
 
     $scope.saveStore = function() {
       if ($scope.isAdd) {
-        wooreportFactory.addStore($scope.store);
+        wooFactory.addStore($scope.store);
       } else {
-        wooreportFactory.updateStore($scope.store);
+        wooFactory.updateStore($scope.store);
       }
       $scope.modal.hide();
     };
 
     $scope.deleteStore = function() {
-      wooreportFactory.deleteStore($scope.store);
+      wooFactory.deleteStore($scope.store);
       $scope.modal.hide();
     };
 
