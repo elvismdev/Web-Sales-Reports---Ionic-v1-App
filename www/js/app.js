@@ -1,4 +1,4 @@
-angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs'])
+angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages'])
 
 .factory('wooFactory', function($http, $q, Loki, $state) {
 

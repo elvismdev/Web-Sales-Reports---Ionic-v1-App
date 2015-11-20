@@ -161,12 +161,16 @@ angular.module('wooshop.controllers', [])
     };
 
     $scope.saveStore = function() {
+
+      // $scope.submitted = true;
+
       if ($scope.isAdd) {
         wooFactory.addStore($scope.store);
       } else {
         wooFactory.updateStore($scope.store);
       }
       $scope.modal.hide();
+
     };
 
     $scope.deleteStore = function() {
