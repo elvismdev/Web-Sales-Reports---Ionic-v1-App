@@ -9112,5 +9112,6 @@ label.item.valid-lr {
   margin: 5px 0; }
 
 .form-error {
-  padding: 2px 0 2px 16px;
-  color: red; }
+  padding: 0px 0 2px 2px;
+  color: rgba(255, 0, 0, 0.5);
+  font-style: italic; }
