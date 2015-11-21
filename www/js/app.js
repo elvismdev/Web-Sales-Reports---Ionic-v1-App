@@ -77,7 +77,7 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
       store.domain = stores[storeID].Domain;
 
       // HTTPS
-      $http.get(store.http_method + store.domain + store.request + store.filter, {
+      $http.get(store.domain + store.request + store.filter, {
         params: {
           'consumer_key': store.consumer_key,
           'consumer_secret': store.customer_secret
