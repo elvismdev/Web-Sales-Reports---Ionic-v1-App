@@ -16,7 +16,8 @@
 		<label class="item item-input" ng-class="{ 'has-error' : addStoreForm.storeUrlField.$invalid }">
 			<input type="url" placeholder="Domain" ng-model="store.Domain" name="storeUrlField" required>
 		</label>
-		<div class="form-errors" ng-messages="addStoreForm.storeUrlField.$error" ng-if='submitted' role="alert">
+		<div class="form-errors" ng-messages="addStoreForm.storeUrlField.$error" role="alert">
+			<div class="form-error" ng-message="required">Include http:// or https://</div>
 		</div>
 	</div>
 	<div class="padding">
