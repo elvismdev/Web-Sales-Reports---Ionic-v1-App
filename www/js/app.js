@@ -5,6 +5,7 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
   var _db;
   var _stores;
 
+
   function initDB() {
     var adapter = new LokiCordovaFSAdapter({"prefix": "loki"});
     _db = new Loki('storesDB',
@@ -59,25 +60,56 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
     _stores.remove(store);
   };
 
+
+  function encodeURLCustom(params) {
+    query_string = Object.keys(params.oauth).map(function (x) {
+      return x + '%3D' + params.oauth[x];
+    }).join('%26');
+    query_string = 'GET&' + params.http_method + params.domain + params.request + params.filter.replace(/&/g, '%26') + '%26' + query_string;
+
+    return query_string
+    .replace(/\//g, '%2F')
+    .replace(/:/g, '%3A')
+    .replace('?', '&')
+    .replace(/\[/g, '%255B')
+    .replace(/]/g, '%255D')
+    .replace(/=/g, '%3D');
+  };
+
+  function getOauthSignature(params) {
+    return CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(
+      this.encodeURLCustom(params),
+      params.customer_secret));
+  };
+
   function requests() {
 
     // Initialize the database.
-    this.initDB();
+    // this.initDB();
 
     // Get all store records from the database.
-    this.getAllStores()
-    .then(function (stores) {
+    // this.getAllStores()
+    // .then(function (stores) {
 
-      if ( stores.length <= 0 ) {
-        return $state.go( 'app.stores' );
-      }
+      // if ( stores.length <= 0 ) {
+      //   return $state.go( 'app.stores' );
+      // }
 
-      storeID = 0; // This is hardcoded by now, we'll gonna make it later to get this ID dinamically from the request.
-      store.name = stores[storeID].Name;
-      store.domain = stores[storeID].Domain;
+      // storeID = 0; // This is hardcoded by now, we'll gonna make it later to get this ID dinamically from the request.
+      // store.name = stores[storeID].Name;
+      // store.domain = stores[storeID].Domain;
+
+      var today = new Date();
+      var date = today.getFullYear() + '-' + (parseInt(today.getMonth()) + 1) + '-' + today.getDate();
+
+
+      gcStore.oauth.oauth_nonce = Math.random().toString(36).slice(2);
+      gcStore.oauth.oauth_timestamp = Math.round((today).getTime() / 1000);
+      gcStore.filter += date;
+      store.filter += date;
 
       // HTTPS
-      $http.get(store.domain + store.request + store.filter, {
+      $http.get(store.http_method + store.domain + store.request + store.filter, {
         params: {
           'consumer_key': store.consumer_key,
           'consumer_secret': store.customer_secret
@@ -88,6 +120,25 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
       }).error(function (data, status, headers, config) {
         store.result.response = data.errors[0];
         store.result.status = status;
+      });
+
+
+      // GC.com
+      // HTTP with OAuth
+      $http.get(gcStore.http_method + gcStore.domain + gcStore.request + gcStore.filter, {
+        params: {
+          'oauth_consumer_key': gcStore.oauth.oauth_consumer_key,
+          'oauth_timestamp': gcStore.oauth.oauth_timestamp,
+          'oauth_nonce': gcStore.oauth.oauth_nonce,
+          'oauth_signature': this.getOauthSignature(gcStore),
+          'oauth_signature_method': gcStore.oauth.oauth_signature_method
+        }
+      }).success(function (data, status) {
+        gcStore.result.response = data;
+        gcStore.result.status = status;
+      }).error(function (data, status, headers, config) {
+        gcStore.result.response = data.errors[0];
+        gcStore.result.status = status;
       });
 
 
@@ -135,7 +186,7 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
             //     });
 
 
-});
+// });
 
 };
 
@@ -145,7 +196,9 @@ return {
   addStore: addStore,
   updateStore: updateStore,
   deleteStore: deleteStore,
-  requests: requests
+  requests: requests,
+  encodeURLCustom: encodeURLCustom,
+  getOauthSignature: getOauthSignature
 };
 })
 

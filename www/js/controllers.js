@@ -42,6 +42,8 @@ angular.module('wooshop.controllers', [])
 
   $scope.doRefresh = function() {
     wooFactory.requests();
+    var now = new Date();
+    $scope.$root.now = now.toTimeString();
     $scope.$broadcast('scroll.refreshComplete');
   };
 
@@ -74,9 +76,14 @@ angular.module('wooshop.controllers', [])
 
 .controller('WooShopAppCtrl', function($scope, $ionicPlatform, wooFactory) {
 
+  var now = new Date();
+  $scope.$root.now = now.toTimeString();
+
   var store_sales = 0;
-  $scope.now = today.toTimeString();
   $scope.store_error = '';
+
+  var gc_store_sales = 0;
+  $scope.gc_store_error = '';
 
   $scope.storeResult = function () {
     if (store.result.status != 200) {
@@ -108,6 +115,36 @@ angular.module('wooshop.controllers', [])
 
   $scope.storeName = function () {
     return store.name;
+  };
+
+
+
+  // HardCoded GC.com
+  $scope.gcStoreResult = function () {
+    if (gcStore.result.status != 200) {
+      if (gcStore.result.response) {
+        $scope.gc_store_error = 'Error ocurred: ' + ' ' + gcStore.result.status + ' ' + gcStore.result.response.code + ' ' + gcStore.result.response.message;
+        gc_store_sales = 0;
+      }
+    } else {
+      if (gcStore.result.response.sales) {
+        $scope.gc_store_error = '';
+        gc_store_sales = parseFloat(gcStore.result.response.sales.total_sales);
+      } else {
+        $scope.gc_store_error = 'Some error ocurred triying to get API info. Check for URL parameters. '  + gcStore.result.response.errors[0].message;
+        gc_store_sales = 0;
+      }
+    }
+
+    return gc_store_sales;
+  };
+
+  $scope.gcStoreName = function () {
+    return gcStore.name;
+  };
+
+  $scope.total = function () {
+    return store_sales + gc_store_sales;
   };
 
 
