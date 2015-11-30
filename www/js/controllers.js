@@ -1,6 +1,6 @@
 angular.module('wooshop.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, wooFactory) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, wooFactory, $q) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -41,11 +41,13 @@ angular.module('wooshop.controllers', [])
   };
 
   $scope.doRefresh = function() {
-    wooFactory.gctvGetDaySales().then( function() {
+
+    $q.all( [ wooFactory.gctvGetDaySales(), wooFactory.gcGetDaySales() ] ).then( function() {
       var now = new Date();
       $scope.$root.now = now.toTimeString();
       $scope.$broadcast('scroll.refreshComplete');
     });
+
   };
 
 })
