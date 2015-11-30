@@ -9115,3 +9115,15 @@ label.item.valid-lr {
   padding: 0px 0 2px 2px;
   color: rgba(255, 0, 0, 0.5);
   font-style: italic; }
+
+.list .item {
+  font-size: 14px;
+  padding-top: 8px;
+  padding-bottom: 8px; }
+
+.item-text-wrap {
+  padding-top: 8px;
+  padding-bottom: 8px; }
+
+.list .item strong {
+  font-size: 16px; }
