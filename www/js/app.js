@@ -82,6 +82,51 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
       params.customer_secret));
   };
 
+  function gctvGetDaySales() {
+    return $http.get(store.http_method + store.domain + store.request + store.filter, {
+      params: {
+        'consumer_key': store.consumer_key,
+        'consumer_secret': store.customer_secret
+      }
+    }).success(function (data, status) {
+      store.result.response = data;
+      store.result.status = status;
+    }).error(function (data, status, headers, config) {
+      store.result.response = data.errors[0];
+      store.result.status = status;
+    });
+  };
+
+  function gcGetDaySales() {
+
+    var today = new Date();
+    var date = today.getFullYear() + '-' + (parseInt(today.getMonth()) + 1) + '-' + today.getDate();
+
+
+    gcStore.oauth.oauth_nonce = Math.random().toString(36).slice(2);
+    gcStore.oauth.oauth_timestamp = Math.round((today).getTime() / 1000);
+    gcStore.filter += date;
+
+    // GC.com
+    // HTTP with OAuth
+    return $http.get(gcStore.http_method + gcStore.domain + gcStore.request + gcStore.filter, {
+      params: {
+        'oauth_consumer_key': gcStore.oauth.oauth_consumer_key,
+        'oauth_timestamp': gcStore.oauth.oauth_timestamp,
+        'oauth_nonce': gcStore.oauth.oauth_nonce,
+        'oauth_signature': this.getOauthSignature(gcStore),
+        'oauth_signature_method': gcStore.oauth.oauth_signature_method
+      }
+    }).success(function (data, status) {
+      gcStore.result.response = data;
+      gcStore.result.status = status;
+    }).error(function (data, status, headers, config) {
+      gcStore.result.response = data.errors[0];
+      gcStore.result.status = status;
+    });
+
+  };
+
   function requests() {
 
     // Initialize the database.
@@ -198,7 +243,9 @@ return {
   deleteStore: deleteStore,
   requests: requests,
   encodeURLCustom: encodeURLCustom,
-  getOauthSignature: getOauthSignature
+  getOauthSignature: getOauthSignature,
+  gctvGetDaySales: gctvGetDaySales,
+  gcGetDaySales: gcGetDaySales
 };
 })
 

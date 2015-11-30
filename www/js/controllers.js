@@ -41,10 +41,12 @@ angular.module('wooshop.controllers', [])
   };
 
   $scope.doRefresh = function() {
-    wooFactory.requests();
-    var now = new Date();
-    $scope.$root.now = now.toTimeString();
-    $scope.$broadcast('scroll.refreshComplete');
+    wooFactory.gctvGetDaySales()
+    .then( function() {
+      var now = new Date();
+      $scope.$root.now = now.toTimeString();
+      $scope.$broadcast('scroll.refreshComplete');
+    });
   };
 
 })
