@@ -9116,14 +9116,13 @@ label.item.valid-lr {
   color: rgba(255, 0, 0, 0.5);
   font-style: italic; }
 
-.list .item {
+.top-sellers ion-item {
   font-size: 14px;
   padding-top: 4px;
   padding-bottom: 4px; }
 
-.item-text-wrap {
-  padding-top: 4px;
-  padding-bottom: 4px; }
-
-.list .item strong {
+.top-sellers ion-item strong {
   font-size: 16px; }
+
+.top-sellers div.item-text-wrap {
+  padding: 4px; }
