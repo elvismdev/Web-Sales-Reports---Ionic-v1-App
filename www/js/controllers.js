@@ -41,8 +41,7 @@ angular.module('wooshop.controllers', [])
   };
 
   $scope.doRefresh = function() {
-    wooFactory.gctvGetDaySales()
-    .then( function() {
+    wooFactory.gctvGetDaySales().then( function() {
       var now = new Date();
       $scope.$root.now = now.toTimeString();
       $scope.$broadcast('scroll.refreshComplete');
