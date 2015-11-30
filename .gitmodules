@@ -1,6 +1,6 @@
 [submodule "www/lib/LokiJS"]
 	path = www/lib/LokiJS
-	url = ../../techfort/LokiJS.git
+	url = https://github.com/techfort/LokiJS.git
 [submodule "www/lib/loki-cordova-fs-adapter"]
 	path = www/lib/loki-cordova-fs-adapter
-	url = ../../cosmith/loki-cordova-fs-adapter.git
+	url = https://github.com/cosmith/loki-cordova-fs-adapter.git
