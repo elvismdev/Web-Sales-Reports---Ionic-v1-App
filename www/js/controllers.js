@@ -42,15 +42,18 @@ angular.module('wooshop.controllers', [])
 
   $scope.doRefresh = function() {
 
-    $q.all( [ wooFactory.gctvGetDaySales(), wooFactory.gcGetDaySales() ] ).then( function() {
-      var now = new Date();
-      $scope.$root.now = now.toTimeString();
-      $scope.$broadcast('scroll.refreshComplete');
-    });
+    $q.all([
+      wooFactory.gctvGetDaySales(),
+      wooFactory.gcGetDaySales()
+      ]).then( function() {
+        var now = new Date();
+        $scope.$root.now = now.toTimeString();
+        $scope.$broadcast('scroll.refreshComplete');
+      });
 
-  };
+    };
 
-})
+  })
 
 
 
