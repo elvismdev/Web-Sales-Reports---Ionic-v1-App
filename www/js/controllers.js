@@ -73,14 +73,49 @@ angular.module('wooshop.controllers', [])
 
 
 
-.controller('PlaylistCtrl', function($scope, $stateParams) {
-})
+.controller('TopSellersCtrl', function($scope, wooFactory, $q) {
 
+  var now = new Date();
+  $scope.$root.now = now.toTimeString();
 
+  $scope.topSoldItems = [];
+  $scope.gcTopSoldItems = [];
 
+  wooFactory.gctvGetTopSellers().then(function(topSoldItems){
+    $scope.topSoldItems = topSoldItems;
+  });
 
+  wooFactory.gcGetTopSellers().then(function(gcTopSoldItems){
+    $scope.gcTopSoldItems = gcTopSoldItems;
+  });
 
-.controller('WooShopAppCtrl', function($scope, $ionicPlatform, wooFactory) {
+  $scope.storeName = function () {
+    return store.name;
+  };
+
+  $scope.gcStoreName = function () {
+    return gcStore.name;
+  };
+
+  $scope.doRefresh = function() {
+
+    $q.all([
+      wooFactory.gctvGetTopSellers(),
+      wooFactory.gcGetTopSellers()
+      ]).then( function() {
+
+        var now = new Date();
+        $scope.$root.now = now.toTimeString();
+
+        $scope.$broadcast('scroll.refreshComplete');
+
+      });
+
+    };
+
+  })
+
+.controller('WooShopAppCtrl', function($scope, $ionicPlatform) {
 
   var now = new Date();
   $scope.$root.now = now.toTimeString();

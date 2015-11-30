@@ -16,6 +16,9 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
   var _db;
   var _stores;
 
+  var topSoldItems = [];
+  var gcTopSoldItems = [];
+
 
   function initDB() {
     var adapter = new LokiCordovaFSAdapter({"prefix": "loki"});
@@ -94,6 +97,9 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
   };
 
 
+
+  // MyGCTV.com
+
   function gctvGetDaySales() {
 
     return $http.get(store.http_method + store.domain + WC_API.GET_SALES + store.filter, {
@@ -108,6 +114,51 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
       store.result.response = data.errors[0];
       store.result.status = status;
     });
+
+  };
+
+  function gctvGetTopSellers() {
+
+    return $http.get(store.http_method + store.domain + WC_API.GET_TOP_SELLERS + store.filter, {
+      params: {
+        'consumer_key': store.consumer_key,
+        'consumer_secret': store.customer_secret
+      }
+    }).then(function(response){
+      topSoldItems = response.data.top_sellers;
+      return topSoldItems;
+    });
+
+  };
+
+
+
+  // GC.com
+
+  function gcGetTopSellers() {
+
+    var today = new Date();
+    var date = today.getFullYear() + '-' + (parseInt(today.getMonth()) + 1) + '-' + today.getDate();
+
+    gcStore.request = WC_API.GET_TOP_SELLERS;
+
+    gcStore.oauth.oauth_nonce = Math.random().toString(36).slice(2);
+    gcStore.oauth.oauth_timestamp = Math.round((today).getTime() / 1000);
+    gcStore.filter += date;
+
+    return $http.get(gcStore.http_method + gcStore.domain + gcStore.request + gcStore.filter, {
+      params: {
+        'oauth_consumer_key': gcStore.oauth.oauth_consumer_key,
+        'oauth_timestamp': gcStore.oauth.oauth_timestamp,
+        'oauth_nonce': gcStore.oauth.oauth_nonce,
+        'oauth_signature': this.getOauthSignature(gcStore),
+        'oauth_signature_method': gcStore.oauth.oauth_signature_method
+      }
+    }).then(function(response){
+      gcTopSoldItems = response.data.top_sellers;
+      return gcTopSoldItems;
+    });
+
   };
 
   function gcGetDaySales() {
@@ -150,7 +201,9 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
     encodeURLCustom: encodeURLCustom,
     getOauthSignature: getOauthSignature,
     gctvGetDaySales: gctvGetDaySales,
-    gcGetDaySales: gcGetDaySales
+    gcGetDaySales: gcGetDaySales,
+    gctvGetTopSellers: gctvGetTopSellers,
+    gcGetTopSellers: gcGetTopSellers
   };
 
 })
@@ -176,11 +229,18 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
     }
   })
 
-  .state('app.browse', {
-    url: '/browse',
+  .state('app.topsellers', {
+    url: '/topsellers',
     views: {
       'menuContent': {
-        templateUrl: 'templates/browse.html'
+        templateUrl: 'templates/topsellers.html',
+        controller: 'TopSellersCtrl'
+      }
+    },
+    resolve: {
+      check: function(wooFactory) {
+        wooFactory.gctvGetTopSellers();
+        wooFactory.gcGetTopSellers();
       }
     }
   })

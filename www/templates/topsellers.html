@@ -1,0 +1,39 @@
+<ion-view view-title="Top Sellers">
+<ion-content>
+
+<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
+
+<div class="card">
+	<div class="item item-divider">
+		{{storeName()}}
+	</div>
+	<div class="item item-text-wrap">
+		<ion-list>
+		<ion-item ng-repeat="item in topSoldItems">
+		{{item.title}} <i class="ion-chevron-right"></i> <strong>{{item.quantity}}</strong>
+	</ion-item>
+</ion-list>
+</div>
+</div>
+
+<div class="card">
+	<div class="item item-divider">
+		{{gcStoreName()}}
+	</div>
+	<div class="item item-text-wrap">
+		<ion-list>
+		<ion-item ng-repeat="item in gcTopSoldItems">
+		{{item.title}} <i class="ion-chevron-right"></i> <strong>{{item.quantity}}</strong>
+	</ion-item>
+</ion-list>
+</div>
+</div>
+
+<div class="card last-update-time">
+	<div class="item item-text-wrap text-center">
+		Last update: {{now}}
+	</div>
+</div>
+
+</ion-content>
+</ion-view>
