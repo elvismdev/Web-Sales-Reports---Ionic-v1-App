@@ -102,7 +102,10 @@ angular.module('wooshop.controllers', [])
     $q.all([
       wooFactory.gctvGetTopSellers(),
       wooFactory.gcGetTopSellers()
-      ]).then( function() {
+      ]).then( function(data) {
+
+        $scope.topSoldItems = data[0];
+        $scope.gcTopSoldItems = data[1];
 
         var now = new Date();
         $scope.$root.now = now.toTimeString();
