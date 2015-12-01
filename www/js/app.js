@@ -11,11 +11,13 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
 
 })())
 
-.factory('wooFactory', function($http, $q, Loki, $state, WC_API) {
+.factory('wooFactory', function($http, $q, Loki, $state, WC_API, $ionicLoading) {
 
   var _db;
   var _stores;
 
+  var storeTotal;
+  var gcStoreTotal;
   var topSoldItems = [];
   var gcTopSoldItems = [];
 
@@ -107,12 +109,9 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
         'consumer_key': store.consumer_key,
         'consumer_secret': store.customer_secret
       }
-    }).success(function (data, status) {
-      store.result.response = data;
-      store.result.status = status;
-    }).error(function (data, status, headers, config) {
-      store.result.response = data.errors[0];
-      store.result.status = status;
+    }).then( function(response) {
+      storeTotal = parseFloat(response.data.sales.total_sales);
+      return storeTotal;
     });
 
   };
@@ -182,14 +181,23 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
         'oauth_signature': this.getOauthSignature(gcStore),
         'oauth_signature_method': gcStore.oauth.oauth_signature_method
       }
-    }).success(function (data, status) {
-      gcStore.result.response = data;
-      gcStore.result.status = status;
-    }).error(function (data, status, headers, config) {
-      gcStore.result.response = data.errors[0];
-      gcStore.result.status = status;
+    }).then( function(response) {
+      gcStoreTotal = parseFloat(response.data.sales.total_sales);
+      return gcStoreTotal;
     });
 
+  };
+
+  function showLoader() {
+    return $ionicLoading.show({
+      template: '<p class="item-icon-left">Fetching Store Data...<ion-spinner icon="lines"/></p>',
+      animation: 'fade-in',
+      showDelay: 0
+    });
+  };
+
+  function hideLoader() {
+    return $ionicLoading.hide();
   };
 
   return {
@@ -203,7 +211,9 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
     gctvGetDaySales: gctvGetDaySales,
     gcGetDaySales: gcGetDaySales,
     gctvGetTopSellers: gctvGetTopSellers,
-    gcGetTopSellers: gcGetTopSellers
+    gcGetTopSellers: gcGetTopSellers,
+    showLoader: showLoader,
+    hideLoader: hideLoader
   };
 
 })
@@ -235,6 +245,11 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
       'menuContent': {
         templateUrl: 'templates/topsellers.html',
         controller: 'TopSellersCtrl'
+      }
+    },
+    resolve: {
+      loader: function(wooFactory) {
+        wooFactory.showLoader();
       }
     }
   })
@@ -268,9 +283,8 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
       }
     },
     resolve: {
-      check: function(wooFactory) {
-        wooFactory.gctvGetDaySales();
-        wooFactory.gcGetDaySales();
+      loader: function(wooFactory) {
+        wooFactory.showLoader();
       }
     }
   });
