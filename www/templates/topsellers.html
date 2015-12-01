@@ -10,7 +10,14 @@
 	<div class="item item-text-wrap">
 		<ion-list>
 		<ion-item ng-repeat="item in topSoldItems">
-		{{item.title}} <i class="ion-chevron-right"></i> <strong>{{item.quantity}}</strong>
+		<div class="row">
+			<div class="col col-80">
+				{{item.title}}
+			</div>
+			<div class="col">
+				<strong>{{item.quantity}}</strong>
+			</div>
+		</div>
 	</ion-item>
 </ion-list>
 </div>
@@ -23,7 +30,14 @@
 	<div class="item item-text-wrap">
 		<ion-list>
 		<ion-item ng-repeat="item in gcTopSoldItems">
-		{{item.title}} <i class="ion-chevron-right"></i> <strong>{{item.quantity}}</strong>
+		<div class="row">
+			<div class="col col-80">
+				{{item.title}}
+			</div>
+			<div class="col">
+				<strong>{{item.quantity}}</strong>
+			</div>
+		</div>
 	</ion-item>
 </ion-list>
 </div>
