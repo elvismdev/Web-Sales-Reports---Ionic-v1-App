@@ -236,12 +236,6 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
         templateUrl: 'templates/topsellers.html',
         controller: 'TopSellersCtrl'
       }
-    },
-    resolve: {
-      check: function(wooFactory) {
-        wooFactory.gctvGetTopSellers();
-        wooFactory.gcGetTopSellers();
-      }
     }
   })
 
