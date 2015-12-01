@@ -40,20 +40,7 @@ angular.module('wooshop.controllers', [])
     }, 1000);
   };
 
-  $scope.doRefresh = function() {
-
-    $q.all([
-      wooFactory.gctvGetDaySales(),
-      wooFactory.gcGetDaySales()
-      ]).then( function() {
-        var now = new Date();
-        $scope.$root.now = now.toTimeString();
-        $scope.$broadcast('scroll.refreshComplete');
-      });
-
-    };
-
-  })
+})
 
 
 
@@ -82,6 +69,8 @@ angular.module('wooshop.controllers', [])
     wooFactory.gctvGetTopSellers(),
     wooFactory.gcGetTopSellers()
     ]).then( function( response ) {
+
+      wooFactory.hideLoader();
 
       $scope.topSoldItems = response[0];
       $scope.gcTopSoldItems = response[1];
@@ -120,81 +109,59 @@ angular.module('wooshop.controllers', [])
 
     })
 
-.controller('WooShopAppCtrl', function($scope, $ionicPlatform) {
+.controller('WooShopAppCtrl', function($scope, wooFactory, $q) {
 
-  var now = new Date();
-  $scope.$root.now = now.toTimeString();
+  $scope.storeResult = 0;
+  $scope.gcStoreResult = 0;
 
-  var store_sales = 0;
-  $scope.store_error = '';
+  $q.all([
+    wooFactory.gctvGetDaySales(),
+    wooFactory.gcGetDaySales()
+    ]).then( function( response ) {
 
-  var gc_store_sales = 0;
-  $scope.gc_store_error = '';
+      wooFactory.hideLoader();
 
-  $scope.storeResult = function () {
-    if (store.result.status != 200) {
-      if (store.result.response) {
-        $scope.store_error = 'Error ocurred: ' + ' ' + store.result.status + ' ' + store.result.response.code + ' ' + store.result.response.message;
-        store_sales = 0;
-      }
-    } else {
-      if (store.result.response.sales) {
-        $scope.store_error = '';
-        store_sales = parseFloat(store.result.response.sales.total_sales);
-      } else {
-        $scope.store_error = 'Some error ocurred triying to get API info. Check for URL parameters. '  + store.result.response.errors[0].message;
-        store_sales = 0;
-      }
-    }
+      $scope.storeResult = response[0];
+      $scope.gcStoreResult = response[1];
 
-    return store_sales;
-  };
+      var now = new Date();
+      $scope.$root.now = now.toTimeString();
 
-  $scope.singleProduct = function () {
-    if (singleProduct.result.status != 200) {
-      if (singleProduct.result.response) {
-        $scope.singleProduct_error = 'Error ocurred: ' + ' ' + singleProduct.result.status + ' ' + singleProduct.result.response.code + ' ' + singleProduct.result.response.message;
-      }
-    }
-    return singleProduct.hours;
-  };
+    });
 
-  $scope.storeName = function () {
-    return store.name;
-  };
+    $scope.storeName = function () {
+      return store.name;
+    };
+
+    $scope.gcStoreName = function () {
+      return gcStore.name;
+    };
+
+    $scope.total = function () {
+      return $scope.storeResult + $scope.gcStoreResult;
+    };
 
 
+    $scope.doRefresh = function() {
 
-  // HardCoded GC.com
-  $scope.gcStoreResult = function () {
-    if (gcStore.result.status != 200) {
-      if (gcStore.result.response) {
-        $scope.gc_store_error = 'Error ocurred: ' + ' ' + gcStore.result.status + ' ' + gcStore.result.response.code + ' ' + gcStore.result.response.message;
-        gc_store_sales = 0;
-      }
-    } else {
-      if (gcStore.result.response.sales) {
-        $scope.gc_store_error = '';
-        gc_store_sales = parseFloat(gcStore.result.response.sales.total_sales);
-      } else {
-        $scope.gc_store_error = 'Some error ocurred triying to get API info. Check for URL parameters. '  + gcStore.result.response.errors[0].message;
-        gc_store_sales = 0;
-      }
-    }
+      $q.all([
+        wooFactory.gctvGetDaySales(),
+        wooFactory.gcGetDaySales()
+        ]).then( function( response ) {
 
-    return gc_store_sales;
-  };
+          $scope.storeResult = response[0];
+          $scope.gcStoreResult = response[1];
 
-  $scope.gcStoreName = function () {
-    return gcStore.name;
-  };
+          var now = new Date();
+          $scope.$root.now = now.toTimeString();
 
-  $scope.total = function () {
-    return store_sales + gc_store_sales;
-  };
+          $scope.$broadcast('scroll.refreshComplete');
+        });
+
+      };
 
 
-})
+    })
 
 
 
