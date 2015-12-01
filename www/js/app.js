@@ -246,11 +246,6 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
         templateUrl: 'templates/topsellers.html',
         controller: 'TopSellersCtrl'
       }
-    },
-    resolve: {
-      loader: function(wooFactory) {
-        wooFactory.showLoader();
-      }
     }
   })
 
@@ -280,11 +275,6 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
       'menuContent': {
         templateUrl: 'templates/overview.html',
         controller: 'WooShopAppCtrl'
-      }
-    },
-    resolve: {
-      loader: function(wooFactory) {
-        wooFactory.showLoader();
       }
     }
   });

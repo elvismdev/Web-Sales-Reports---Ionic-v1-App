@@ -62,18 +62,20 @@ angular.module('wooshop.controllers', [])
 
 .controller('TopSellersCtrl', function($scope, wooFactory, $q) {
 
+  wooFactory.showLoader();
+
   $scope.topSoldItems = [];
   $scope.gcTopSoldItems = [];
 
   $q.all([
     wooFactory.gctvGetTopSellers(),
-    wooFactory.gcGetTopSellers()
+    // wooFactory.gcGetTopSellers()
     ]).then( function( response ) {
 
       wooFactory.hideLoader();
 
       $scope.topSoldItems = response[0];
-      $scope.gcTopSoldItems = response[1];
+      // $scope.gcTopSoldItems = response[1];
 
       var now = new Date();
       $scope.$root.now = now.toTimeString();
@@ -92,11 +94,11 @@ angular.module('wooshop.controllers', [])
 
       $q.all([
         wooFactory.gctvGetTopSellers(),
-        wooFactory.gcGetTopSellers()
+        // wooFactory.gcGetTopSellers()
         ]).then( function( response ) {
 
           $scope.topSoldItems = response[0];
-          $scope.gcTopSoldItems = response[1];
+          // $scope.gcTopSoldItems = response[1];
 
           var now = new Date();
           $scope.$root.now = now.toTimeString();
@@ -111,18 +113,20 @@ angular.module('wooshop.controllers', [])
 
 .controller('WooShopAppCtrl', function($scope, wooFactory, $q) {
 
+  wooFactory.showLoader();
+
   $scope.storeResult = 0;
   $scope.gcStoreResult = 0;
 
   $q.all([
     wooFactory.gctvGetDaySales(),
-    wooFactory.gcGetDaySales()
+    // wooFactory.gcGetDaySales()
     ]).then( function( response ) {
 
       wooFactory.hideLoader();
 
       $scope.storeResult = response[0];
-      $scope.gcStoreResult = response[1];
+      // $scope.gcStoreResult = response[1];
 
       var now = new Date();
       $scope.$root.now = now.toTimeString();
@@ -146,11 +150,11 @@ angular.module('wooshop.controllers', [])
 
       $q.all([
         wooFactory.gctvGetDaySales(),
-        wooFactory.gcGetDaySales()
+        // wooFactory.gcGetDaySales()
         ]).then( function( response ) {
 
           $scope.storeResult = response[0];
-          $scope.gcStoreResult = response[1];
+          // $scope.gcStoreResult = response[1];
 
           var now = new Date();
           $scope.$root.now = now.toTimeString();
