@@ -75,48 +75,50 @@ angular.module('wooshop.controllers', [])
 
 .controller('TopSellersCtrl', function($scope, wooFactory, $q) {
 
-  var now = new Date();
-  $scope.$root.now = now.toTimeString();
-
   $scope.topSoldItems = [];
   $scope.gcTopSoldItems = [];
 
-  wooFactory.gctvGetTopSellers().then(function(topSoldItems){
-    $scope.topSoldItems = topSoldItems;
-  });
+  $q.all([
+    wooFactory.gctvGetTopSellers(),
+    wooFactory.gcGetTopSellers()
+    ]).then( function( response ) {
 
-  wooFactory.gcGetTopSellers().then(function(gcTopSoldItems){
-    $scope.gcTopSoldItems = gcTopSoldItems;
-  });
+      $scope.topSoldItems = response[0];
+      $scope.gcTopSoldItems = response[1];
 
-  $scope.storeName = function () {
-    return store.name;
-  };
+      var now = new Date();
+      $scope.$root.now = now.toTimeString();
 
-  $scope.gcStoreName = function () {
-    return gcStore.name;
-  };
+    });
 
-  $scope.doRefresh = function() {
-
-    $q.all([
-      wooFactory.gctvGetTopSellers(),
-      wooFactory.gcGetTopSellers()
-      ]).then( function(data) {
-
-        $scope.topSoldItems = data[0];
-        $scope.gcTopSoldItems = data[1];
-
-        var now = new Date();
-        $scope.$root.now = now.toTimeString();
-
-        $scope.$broadcast('scroll.refreshComplete');
-
-      });
-
+    $scope.storeName = function () {
+      return store.name;
     };
 
-  })
+    $scope.gcStoreName = function () {
+      return gcStore.name;
+    };
+
+    $scope.doRefresh = function() {
+
+      $q.all([
+        wooFactory.gctvGetTopSellers(),
+        wooFactory.gcGetTopSellers()
+        ]).then( function( response ) {
+
+          $scope.topSoldItems = response[0];
+          $scope.gcTopSoldItems = response[1];
+
+          var now = new Date();
+          $scope.$root.now = now.toTimeString();
+
+          $scope.$broadcast('scroll.refreshComplete');
+
+        });
+
+      };
+
+    })
 
 .controller('WooShopAppCtrl', function($scope, $ionicPlatform) {
 
