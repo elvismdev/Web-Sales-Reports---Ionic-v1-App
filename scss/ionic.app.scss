@@ -63,13 +63,18 @@ label.item.valid-lr {
 .top-sellers {
 	ion-item {
 		font-size: 14px;
-		padding-top: 4px;
-		padding-bottom: 4px;
+		padding: 4px;
 	}
 	ion-item strong {
 		font-size: 16px;
 	}
 	div.item-text-wrap {
 		padding: 4px;
+	}
+	ion-item div.col:last-child {
+		text-align: right;
+	}
+	ion-item div.row {
+		padding: 0;
 	}
 }

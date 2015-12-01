@@ -9118,11 +9118,16 @@ label.item.valid-lr {
 
 .top-sellers ion-item {
   font-size: 14px;
-  padding-top: 4px;
-  padding-bottom: 4px; }
+  padding: 4px; }
 
 .top-sellers ion-item strong {
   font-size: 16px; }
 
 .top-sellers div.item-text-wrap {
   padding: 4px; }
+
+.top-sellers ion-item div.col:last-child {
+  text-align: right; }
+
+.top-sellers ion-item div.row {
+  padding: 0; }
