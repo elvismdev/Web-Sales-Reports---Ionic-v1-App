@@ -57,58 +57,6 @@ angular.module('wooshop.controllers', [])
 })
 
 
-
-
-
-.controller('TopSellersCtrl', function($scope, wooFactory, $q) {
-
-  wooFactory.showLoader();
-
-  $scope.topSoldItems = [];
-  $scope.gcTopSoldItems = [];
-
-  $q.all([
-    wooFactory.gctvGetTopSellers(),
-    wooFactory.gcGetTopSellers()
-    ]).then( function( response ) {
-
-      wooFactory.hideLoader();
-
-      $scope.topSoldItems = response[0];
-      $scope.gcTopSoldItems = response[1];
-
-      wooFactory.setNowTime();
-
-    });
-
-    $scope.storeName = function () {
-      return store.name;
-    };
-
-    $scope.gcStoreName = function () {
-      return gcStore.name;
-    };
-
-    $scope.doRefresh = function() {
-
-      $q.all([
-        wooFactory.gctvGetTopSellers(),
-        wooFactory.gcGetTopSellers()
-        ]).then( function( response ) {
-
-          $scope.topSoldItems = response[0];
-          $scope.gcTopSoldItems = response[1];
-
-          wooFactory.setNowTime();
-
-          $scope.$broadcast('scroll.refreshComplete');
-
-        });
-
-      };
-
-    })
-
 .controller('WooShopAppCtrl', function($scope, wooFactory, $q) {
 
   wooFactory.showLoader();
@@ -117,21 +65,24 @@ angular.module('wooshop.controllers', [])
   $scope.gcStoreResult = 0;
 
   $q
-  .all([ wooFactory.gctvGetDaySales(), wooFactory.gcGetDaySales() ])
+  .all([
+    wooFactory.gctvGetDaySales(),
+    wooFactory.gcGetDaySales()
+    ])
   .then( function( response ) {
     wooFactory.hideLoader();
 
     $scope.storeResult = response[0];
     $scope.gcStoreResult = response[1];
 
-    wooFactory.setNowTime();
-
   },
   function() {
-    wooFactory.hideLoader();
+    wooFactory.hideLoaderError();
+  })
+  .finally( function() {
     wooFactory.setNowTime();
-  }
-  );
+  });
+
 
   $scope.storeName = function () {
     return store.name;
@@ -148,25 +99,96 @@ angular.module('wooshop.controllers', [])
 
   $scope.doRefresh = function() {
 
-    $q.all([
+    $q
+    .all([
       wooFactory.gctvGetDaySales(),
       wooFactory.gcGetDaySales()
-      ]).then( function( response ) {
+      ])
+    .then( function( response ) {
 
-        $scope.storeResult = response[0];
-        $scope.gcStoreResult = response[1];
+      $scope.storeResult = response[0];
+      $scope.gcStoreResult = response[1];
 
-        wooFactory.setNowTime();
+      wooFactory.setNowTime();
 
-        $scope.$broadcast('scroll.refreshComplete');
-      });
+      $scope.$broadcast('scroll.refreshComplete');
+    },
+    function() {
+      wooFactory.showLoaderError();
+    })
+    .finally( function() {
+      wooFactory.setNowTime();
+    });
 
-    };
+  };
 
 
+})
+
+
+.controller('TopSellersCtrl', function($scope, wooFactory, $q) {
+
+  wooFactory.showLoader();
+
+  $scope.topSoldItems = [];
+  $scope.gcTopSoldItems = [];
+
+  $q
+  .all([
+    wooFactory.gctvGetTopSellers(),
+    wooFactory.gcGetTopSellers()
+    ])
+  .then( function( response ) {
+
+    wooFactory.hideLoader();
+
+    $scope.topSoldItems = response[0];
+    $scope.gcTopSoldItems = response[1];
+
+  },
+  function() {
+    wooFactory.hideLoaderError();
   })
+  .finally( function() {
+    wooFactory.setNowTime();
+  });
 
 
+  $scope.storeName = function () {
+    return store.name;
+  };
+
+  $scope.gcStoreName = function () {
+    return gcStore.name;
+  };
+
+  $scope.doRefresh = function() {
+
+    $q
+    .all([
+      wooFactory.gctvGetTopSellers(),
+      wooFactory.gcGetTopSellers()
+      ])
+    .then( function( response ) {
+
+      $scope.topSoldItems = response[0];
+      $scope.gcTopSoldItems = response[1];
+
+      wooFactory.setNowTime();
+
+      $scope.$broadcast('scroll.refreshComplete');
+
+    },
+    function() {
+      wooFactory.showLoaderError();
+    })
+    .finally( function() {
+      wooFactory.setNowTime();
+    });
+
+  };
+
+})
 
 
 

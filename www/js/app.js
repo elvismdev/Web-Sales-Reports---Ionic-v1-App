@@ -11,7 +11,7 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
 
 })())
 
-.factory('wooFactory', function($http, $q, Loki, $state, WC_API, $ionicLoading, $rootScope) {
+.factory('wooFactory', function($http, $q, Loki, $state, WC_API, $ionicLoading, $rootScope, $timeout) {
 
   var _db;
   var _stores;
@@ -188,9 +188,24 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
 
   };
 
+  function showLoaderError() {
+    return $q( function() {
+      $ionicLoading.show({
+        template: '<p>Error...</p>',
+        animation: 'fade-in',
+        showDelay: 0,
+        noBackdrop: true
+      });
+      return $timeout( function() {
+        $ionicLoading.hide();
+        $rootScope.$broadcast('scroll.refreshComplete');
+      }, 1000 );
+    });
+  };
+
   function showLoader() {
     return $ionicLoading.show({
-      template: '<p class="item-icon-left">Fetching Store Data...<ion-spinner icon="lines"/></p>',
+      template: '<p class="item-icon-left">Getting store data...<ion-spinner icon="lines"/></p>',
       animation: 'fade-in',
       showDelay: 0
     });
@@ -198,6 +213,17 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
 
   function hideLoader() {
     return $ionicLoading.hide();
+  };
+
+  function hideLoaderError() {
+    return $q( function() {
+      $ionicLoading.show({
+        template: '<p class="item-icon-left">Error...<ion-spinner icon="ripple"/></p>',
+      });
+      return $timeout( function() {
+        $ionicLoading.hide();
+      }, 2000 );
+    });
   };
 
   function setNowTime() {
@@ -219,7 +245,9 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
     gcGetTopSellers: gcGetTopSellers,
     showLoader: showLoader,
     hideLoader: hideLoader,
-    setNowTime: setNowTime
+    setNowTime: setNowTime,
+    hideLoaderError: hideLoaderError,
+    showLoaderError: showLoaderError
   };
 
 })
