@@ -77,8 +77,7 @@ angular.module('wooshop.controllers', [])
       $scope.topSoldItems = response[0];
       $scope.gcTopSoldItems = response[1];
 
-      var now = new Date();
-      $scope.$root.now = now.toTimeString();
+      wooFactory.setNowTime();
 
     });
 
@@ -100,8 +99,7 @@ angular.module('wooshop.controllers', [])
           $scope.topSoldItems = response[0];
           $scope.gcTopSoldItems = response[1];
 
-          var now = new Date();
-          $scope.$root.now = now.toTimeString();
+          wooFactory.setNowTime();
 
           $scope.$broadcast('scroll.refreshComplete');
 
@@ -118,54 +116,55 @@ angular.module('wooshop.controllers', [])
   $scope.storeResult = 0;
   $scope.gcStoreResult = 0;
 
-  $q.all([
-    wooFactory.gctvGetDaySales(),
-    wooFactory.gcGetDaySales()
-    ]).then( function( response ) {
+  $q
+  .all([ wooFactory.gctvGetDaySales(), wooFactory.gcGetDaySales() ])
+  .then( function( response ) {
+    wooFactory.hideLoader();
 
-      wooFactory.hideLoader();
+    $scope.storeResult = response[0];
+    $scope.gcStoreResult = response[1];
 
-      $scope.storeResult = response[0];
-      $scope.gcStoreResult = response[1];
+    wooFactory.setNowTime();
 
-      var now = new Date();
-      $scope.$root.now = now.toTimeString();
+  },
+  function() {
+    wooFactory.hideLoader();
+    wooFactory.setNowTime();
+  }
+  );
 
-    });
+  $scope.storeName = function () {
+    return store.name;
+  };
 
-    $scope.storeName = function () {
-      return store.name;
+  $scope.gcStoreName = function () {
+    return gcStore.name;
+  };
+
+  $scope.total = function () {
+    return $scope.storeResult + $scope.gcStoreResult;
+  };
+
+
+  $scope.doRefresh = function() {
+
+    $q.all([
+      wooFactory.gctvGetDaySales(),
+      wooFactory.gcGetDaySales()
+      ]).then( function( response ) {
+
+        $scope.storeResult = response[0];
+        $scope.gcStoreResult = response[1];
+
+        wooFactory.setNowTime();
+
+        $scope.$broadcast('scroll.refreshComplete');
+      });
+
     };
 
-    $scope.gcStoreName = function () {
-      return gcStore.name;
-    };
 
-    $scope.total = function () {
-      return $scope.storeResult + $scope.gcStoreResult;
-    };
-
-
-    $scope.doRefresh = function() {
-
-      $q.all([
-        wooFactory.gctvGetDaySales(),
-        wooFactory.gcGetDaySales()
-        ]).then( function( response ) {
-
-          $scope.storeResult = response[0];
-          $scope.gcStoreResult = response[1];
-
-          var now = new Date();
-          $scope.$root.now = now.toTimeString();
-
-          $scope.$broadcast('scroll.refreshComplete');
-        });
-
-      };
-
-
-    })
+  })
 
 
 
