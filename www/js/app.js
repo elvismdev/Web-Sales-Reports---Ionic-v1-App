@@ -1,4 +1,4 @@
-angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages', 'ionic-native-transitions'])
+angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages'])
 
 .constant('WC_API', (function() {
 
@@ -219,13 +219,11 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
 })
 
 
-.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $ionicNativeTransitionsProvider) {
-
-  $ionicNativeTransitionsProvider.setDefaultTransition({
-    type: 'slide'
-  });
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
   $ionicConfigProvider.scrolling.jsScrolling(false);
+
+  $ionicConfigProvider.views.transition('ios');
 
   $stateProvider
 
