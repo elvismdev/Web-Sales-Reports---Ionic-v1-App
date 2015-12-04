@@ -11,7 +11,7 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
 
 })())
 
-.factory('wooFactory', function($http, $q, Loki, $state, WC_API, $ionicLoading) {
+.factory('wooFactory', function($http, $q, Loki, $state, WC_API, $ionicLoading, $rootScope) {
 
   var _db;
   var _stores;
@@ -200,6 +200,11 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
     return $ionicLoading.hide();
   };
 
+  function setNowTime() {
+    var now = new Date();
+    $rootScope.now = now.toTimeString();
+  };
+
   return {
     initDB: initDB,
     getAllStores: getAllStores,
@@ -213,7 +218,8 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
     gctvGetTopSellers: gctvGetTopSellers,
     gcGetTopSellers: gcGetTopSellers,
     showLoader: showLoader,
-    hideLoader: hideLoader
+    hideLoader: hideLoader,
+    setNowTime: setNowTime
   };
 
 })
