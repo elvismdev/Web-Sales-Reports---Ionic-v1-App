@@ -9115,3 +9115,37 @@ label.item.valid-lr {
   padding: 0px 0 2px 2px;
   color: rgba(255, 0, 0, 0.5);
   font-style: italic; }
+
+.top-sellers ion-item {
+  font-size: 14px;
+  padding: 4px; }
+
+.top-sellers ion-item strong {
+  font-size: 16px; }
+
+.top-sellers div.item-text-wrap {
+  padding: 4px; }
+
+.top-sellers ion-item div.col:last-child {
+  text-align: right; }
+
+.top-sellers ion-item div.row {
+  padding: 0; }
+
+.item-icon-left ion-spinner {
+  float: left;
+  margin-left: -3.2em;
+  margin-right: 1em;
+  margin-top: -0.2em; }
+
+.spinner svg {
+  width: 28px;
+  height: 28px;
+  stroke: #999;
+  fill: #999; }
+
+.loading-container p {
+  margin: 10px 0 10px; }
+
+.loading-container div.loading {
+  padding: 10px; }

@@ -1,6 +1,6 @@
 angular.module('wooshop.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout, wooFactory) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, wooFactory, $q) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -40,11 +40,6 @@ angular.module('wooshop.controllers', [])
     }, 1000);
   };
 
-  $scope.doRefresh = function() {
-    wooFactory.requests();
-    $scope.$broadcast('scroll.refreshComplete');
-  };
-
 })
 
 
@@ -62,58 +57,138 @@ angular.module('wooshop.controllers', [])
 })
 
 
+.controller('WooShopAppCtrl', function($scope, wooFactory, $q) {
 
+  wooFactory.showLoader();
 
+  $scope.storeResult = 0;
+  $scope.gcStoreResult = 0;
 
-.controller('PlaylistCtrl', function($scope, $stateParams) {
-})
+  $q
+  .all([
+    wooFactory.gctvGetDaySales(),
+    wooFactory.gcGetDaySales()
+    ])
+  .then( function( response ) {
+    wooFactory.hideLoader();
 
+    $scope.storeResult = response[0];
+    $scope.gcStoreResult = response[1];
 
+  },
+  function() {
+    wooFactory.hideLoaderError();
+  })
+  .finally( function() {
+    wooFactory.setNowTime();
+  });
 
-
-
-.controller('WooShopAppCtrl', function($scope, $ionicPlatform, wooFactory) {
-
-  var store_sales = 0;
-  $scope.now = today.toTimeString();
-  $scope.store_error = '';
-
-  $scope.storeResult = function () {
-    if (store.result.status != 200) {
-      if (store.result.response) {
-        $scope.store_error = 'Error ocurred: ' + ' ' + store.result.status + ' ' + store.result.response.code + ' ' + store.result.response.message;
-        store_sales = 0;
-      }
-    } else {
-      if (store.result.response.sales) {
-        $scope.store_error = '';
-        store_sales = parseFloat(store.result.response.sales.total_sales);
-      } else {
-        $scope.store_error = 'Some error ocurred triying to get API info. Check for URL parameters. '  + store.result.response.errors[0].message;
-        store_sales = 0;
-      }
-    }
-
-    return store_sales;
-  };
-
-  $scope.singleProduct = function () {
-    if (singleProduct.result.status != 200) {
-      if (singleProduct.result.response) {
-        $scope.singleProduct_error = 'Error ocurred: ' + ' ' + singleProduct.result.status + ' ' + singleProduct.result.response.code + ' ' + singleProduct.result.response.message;
-      }
-    }
-    return singleProduct.hours;
-  };
 
   $scope.storeName = function () {
     return store.name;
   };
 
+  $scope.gcStoreName = function () {
+    return gcStore.name;
+  };
+
+  $scope.total = function () {
+    return $scope.storeResult + $scope.gcStoreResult;
+  };
+
+
+  $scope.doRefresh = function() {
+
+    $q
+    .all([
+      wooFactory.gctvGetDaySales(),
+      wooFactory.gcGetDaySales()
+      ])
+    .then( function( response ) {
+
+      $scope.storeResult = response[0];
+      $scope.gcStoreResult = response[1];
+
+      wooFactory.setNowTime();
+
+      $scope.$broadcast('scroll.refreshComplete');
+    },
+    function() {
+      wooFactory.showLoaderError();
+    })
+    .finally( function() {
+      wooFactory.setNowTime();
+    });
+
+  };
+
 
 })
 
 
+.controller('TopSellersCtrl', function($scope, wooFactory, $q) {
+
+  wooFactory.showLoader();
+
+  $scope.topSoldItems = [];
+  $scope.gcTopSoldItems = [];
+
+  $q
+  .all([
+    wooFactory.gctvGetTopSellers(),
+    wooFactory.gcGetTopSellers()
+    ])
+  .then( function( response ) {
+
+    wooFactory.hideLoader();
+
+    $scope.topSoldItems = response[0];
+    $scope.gcTopSoldItems = response[1];
+
+  },
+  function() {
+    wooFactory.hideLoaderError();
+  })
+  .finally( function() {
+    wooFactory.setNowTime();
+  });
+
+
+  $scope.storeName = function () {
+    return store.name;
+  };
+
+  $scope.gcStoreName = function () {
+    return gcStore.name;
+  };
+
+  $scope.doRefresh = function() {
+
+    $q
+    .all([
+      wooFactory.gctvGetTopSellers(),
+      wooFactory.gcGetTopSellers()
+      ])
+    .then( function( response ) {
+
+      $scope.topSoldItems = response[0];
+      $scope.gcTopSoldItems = response[1];
+
+      wooFactory.setNowTime();
+
+      $scope.$broadcast('scroll.refreshComplete');
+
+    },
+    function() {
+      wooFactory.showLoaderError();
+    })
+    .finally( function() {
+      wooFactory.setNowTime();
+    });
+
+  };
+
+})
 
 
 

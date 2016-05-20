@@ -1,9 +1,26 @@
 angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages'])
 
-.factory('wooFactory', function($http, $q, Loki, $state) {
+.constant('WC_API', (function() {
+
+  var base = '/wc-api/v2/';
+
+  return {
+    GET_SALES: base + 'reports/sales',
+    GET_TOP_SELLERS: base + 'reports/sales/top_sellers'
+  }
+
+})())
+
+.factory('wooFactory', function($http, $q, Loki, $state, WC_API, $ionicLoading, $rootScope, $timeout) {
 
   var _db;
   var _stores;
+
+  var storeTotal;
+  var gcStoreTotal;
+  var topSoldItems = [];
+  var gcTopSoldItems = [];
+
 
   function initDB() {
     var adapter = new LokiCordovaFSAdapter({"prefix": "loki"});
@@ -59,98 +76,188 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
     _stores.remove(store);
   };
 
-  function requests() {
 
-    // Initialize the database.
-    this.initDB();
+  function encodeURLCustom(params) {
+    query_string = Object.keys(params.oauth).map(function (x) {
+      return x + '%3D' + params.oauth[x];
+    }).join('%26');
+    query_string = 'GET&' + params.http_method + params.domain + params.request + params.filter.replace(/&/g, '%26') + '%26' + query_string;
 
-    // Get all store records from the database.
-    this.getAllStores()
-    .then(function (stores) {
+    return query_string
+    .replace(/\//g, '%2F')
+    .replace(/:/g, '%3A')
+    .replace('?', '&')
+    .replace(/\[/g, '%255B')
+    .replace(/]/g, '%255D')
+    .replace(/=/g, '%3D');
+  };
 
-      if ( stores.length <= 0 ) {
-        return $state.go( 'app.stores' );
+  function getOauthSignature(params) {
+    return CryptoJS.enc.Base64.stringify(CryptoJS.HmacSHA256(
+      this.encodeURLCustom(params),
+      params.customer_secret));
+  };
+
+
+
+  // MyGCTV.com
+
+  function gctvGetDaySales() {
+
+    return $http.get(store.http_method + store.domain + WC_API.GET_SALES + store.filter, {
+      params: {
+        'consumer_key': store.consumer_key,
+        'consumer_secret': store.customer_secret
       }
+    }).then( function(response) {
+      storeTotal = parseFloat(response.data.sales.total_sales);
+      return storeTotal;
+    });
 
-      storeID = 0; // This is hardcoded by now, we'll gonna make it later to get this ID dinamically from the request.
-      store.name = stores[storeID].Name;
-      store.domain = stores[storeID].Domain;
+  };
 
-      // HTTPS
-      $http.get(store.domain + store.request + store.filter, {
-        params: {
-          'consumer_key': store.consumer_key,
-          'consumer_secret': store.customer_secret
-        }
-      }).success(function (data, status) {
-        store.result.response = data;
-        store.result.status = status;
-      }).error(function (data, status, headers, config) {
-        store.result.response = data.errors[0];
-        store.result.status = status;
+  function gctvGetTopSellers() {
+
+    return $http.get(store.http_method + store.domain + WC_API.GET_TOP_SELLERS + store.filter, {
+      params: {
+        'consumer_key': store.consumer_key,
+        'consumer_secret': store.customer_secret
+      }
+    }).then(function(response){
+      topSoldItems = response.data.top_sellers;
+      return topSoldItems;
+    });
+
+  };
+
+
+
+  // GC.com
+
+  function gcGetTopSellers() {
+
+    var today = new Date();
+    var date = today.getFullYear() + '-' + (parseInt(today.getMonth()) + 1) + '-' + today.getDate();
+
+    gcStore.request = WC_API.GET_TOP_SELLERS;
+
+    gcStore.oauth.oauth_nonce = Math.random().toString(36).slice(2);
+    gcStore.oauth.oauth_timestamp = Math.round((today).getTime() / 1000);
+    gcStore.filter += date;
+
+    return $http.get(gcStore.http_method + gcStore.domain + gcStore.request + gcStore.filter, {
+      params: {
+        'oauth_consumer_key': gcStore.oauth.oauth_consumer_key,
+        'oauth_timestamp': gcStore.oauth.oauth_timestamp,
+        'oauth_nonce': gcStore.oauth.oauth_nonce,
+        'oauth_signature': this.getOauthSignature(gcStore),
+        'oauth_signature_method': gcStore.oauth.oauth_signature_method
+      }
+    }).then(function(response){
+      gcTopSoldItems = response.data.top_sellers;
+      return gcTopSoldItems;
+    });
+
+  };
+
+  function gcGetDaySales() {
+
+    var today = new Date();
+    var date = today.getFullYear() + '-' + (parseInt(today.getMonth()) + 1) + '-' + today.getDate();
+
+    gcStore.request = WC_API.GET_SALES;
+
+    gcStore.oauth.oauth_nonce = Math.random().toString(36).slice(2);
+    gcStore.oauth.oauth_timestamp = Math.round((today).getTime() / 1000);
+    gcStore.filter += date;
+
+    // GC.com
+    // HTTP with OAuth
+    return $http.get(gcStore.http_method + gcStore.domain + gcStore.request + gcStore.filter, {
+      params: {
+        'oauth_consumer_key': gcStore.oauth.oauth_consumer_key,
+        'oauth_timestamp': gcStore.oauth.oauth_timestamp,
+        'oauth_nonce': gcStore.oauth.oauth_nonce,
+        'oauth_signature': this.getOauthSignature(gcStore),
+        'oauth_signature_method': gcStore.oauth.oauth_signature_method
+      }
+    }).then( function(response) {
+      gcStoreTotal = parseFloat(response.data.sales.total_sales);
+      return gcStoreTotal;
+    });
+
+  };
+
+  function showLoaderError() {
+    return $q( function() {
+      $ionicLoading.show({
+        template: '<p>Error...</p>',
+        animation: 'fade-in',
+        showDelay: 0,
+        noBackdrop: true
       });
+      return $timeout( function() {
+        $ionicLoading.hide();
+        $rootScope.$broadcast('scroll.refreshComplete');
+      }, 1000 );
+    });
+  };
 
+  function showLoader() {
+    return $ionicLoading.show({
+      template: '<p class="item-icon-left">Getting store data...<ion-spinner icon="lines"/></p>',
+      animation: 'fade-in',
+      showDelay: 0
+    });
+  };
 
-      // $http.get(singleProduct.http_method + singleProduct.domain + singleProduct.request + singleProduct.filter, {
-            //   params: {
-            //     'consumer_key': singleProduct.consumer_key,
-            //     'consumer_secret': singleProduct.customer_secret
-            //   }
-            // }).success(function (data, status) {
-            //   singleProduct.result.response = data;
-            //   singleProduct.result.status = status;
+  function hideLoader() {
+    return $ionicLoading.hide();
+  };
 
-            //   var orders = data.orders;
+  function hideLoaderError() {
+    return $q( function() {
+      $ionicLoading.show({
+        template: '<p class="item-icon-left">Error...<ion-spinner icon="ripple"/></p>',
+      });
+      return $timeout( function() {
+        $ionicLoading.hide();
+      }, 2000 );
+    });
+  };
 
-            //     // Iterate
-            //     var hours = [];
-            //     for (var i = 0; i < orders.length; i++) {
-            //       var order = orders[i];
-            //       var date = new Date(order.created_at);
+  function setNowTime() {
+    var now = new Date();
+    $rootScope.now = now.toTimeString();
+  };
 
-            //         // Convert 24H format into 12H format
-            //         date = date.getHours() > 12 ? date.getHours() - 12 + 'pm' : date.getHours() + 'am';
+  return {
+    initDB: initDB,
+    getAllStores: getAllStores,
+    addStore: addStore,
+    updateStore: updateStore,
+    deleteStore: deleteStore,
+    encodeURLCustom: encodeURLCustom,
+    getOauthSignature: getOauthSignature,
+    gctvGetDaySales: gctvGetDaySales,
+    gcGetDaySales: gcGetDaySales,
+    gctvGetTopSellers: gctvGetTopSellers,
+    gcGetTopSellers: gcGetTopSellers,
+    showLoader: showLoader,
+    hideLoader: hideLoader,
+    setNowTime: setNowTime,
+    hideLoaderError: hideLoaderError,
+    showLoaderError: showLoaderError
+  };
 
-            //         var exist = false;
-            //         for (var x = 0; x < hours.length; x++) {
-            //           if (hours[x].label == date) {
-            //             hours[x].value++;
-            //             exist = true;
-            //             break;
-            //           }
-            //         }
-
-            //         if (exist == false) {
-            //           hours.push({
-            //             label: date,
-            //             value: 1
-            //           });
-            //         }
-            //       }
-
-            //       singleProduct.hours = hours;
-            //     }).error(function (data, status, headers, config) {
-            //       singleProduct.result.response = data.errors[0];
-            //       singleProduct.result.status = status;
-            //     });
-
-
-});
-
-};
-
-return {
-  initDB: initDB,
-  getAllStores: getAllStores,
-  addStore: addStore,
-  updateStore: updateStore,
-  deleteStore: deleteStore,
-  requests: requests
-};
 })
 
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+
+  $ionicConfigProvider.scrolling.jsScrolling(false);
+
+  $ionicConfigProvider.views.transition('ios');
 
   $stateProvider
 
@@ -170,11 +277,12 @@ return {
     }
   })
 
-  .state('app.browse', {
-    url: '/browse',
+  .state('app.topsellers', {
+    url: '/topsellers',
     views: {
       'menuContent': {
-        templateUrl: 'templates/browse.html'
+        templateUrl: 'templates/topsellers.html',
+        controller: 'TopSellersCtrl'
       }
     }
   })
@@ -205,11 +313,6 @@ return {
       'menuContent': {
         templateUrl: 'templates/overview.html',
         controller: 'WooShopAppCtrl'
-      }
-    },
-    resolve: {
-      check: function(wooFactory) {
-        wooFactory.requests();
       }
     }
   });
