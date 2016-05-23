@@ -2,9 +2,9 @@
 var store = {
     'name': 'MyGCTV.com',
     'http_method': 'https://',
-    'domain': 'grantcardonetv.com',
-    'consumer_key': 'ck_b0fd7ac1322e8e23dd0775da34b6e899', // From WP user profile configuration
-    'customer_secret': 'cs_fd46d7d0fff710cc0d5f46134cc2cb34', // From WP user profile configuration
+    'domain': 'shop.grantcardonetv.com',
+    'consumer_key': 'ck_d18375c60c47b06b3f57e6d36b23210a15668462', // From WP user profile configuration
+    'customer_secret': 'cs_61b9c07878ab6ecb71c4208c797e64c1a8b8ba67', // From WP user profile configuration
     /*'customer_secret': 'cs_fd46d7d0fff710cc0d5f46134cc2cb34' + '&', // From WP user profile configuration (v3) Also change in version and request parameters for v3*/
     'filter': '?filter[created_at_min]=',
     'result': {}
