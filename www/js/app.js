@@ -136,22 +136,10 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
 
   function gcGetTopSellers() {
 
-    var today = new Date();
-    var date = today.getFullYear() + '-' + (parseInt(today.getMonth()) + 1) + '-' + today.getDate();
-
-    gcStore.request = WC_API.GET_TOP_SELLERS;
-
-    gcStore.oauth.oauth_nonce = Math.random().toString(36).slice(2);
-    gcStore.oauth.oauth_timestamp = Math.round((today).getTime() / 1000);
-    gcStore.filter += date;
-
-    return $http.get(gcStore.http_method + gcStore.domain + gcStore.request + gcStore.filter, {
+    return $http.get(gcStore.http_method + gcStore.domain + WC_API.GET_TOP_SELLERS + gcStore.filter, {
       params: {
-        'oauth_consumer_key': gcStore.oauth.oauth_consumer_key,
-        'oauth_timestamp': gcStore.oauth.oauth_timestamp,
-        'oauth_nonce': gcStore.oauth.oauth_nonce,
-        'oauth_signature': this.getOauthSignature(gcStore),
-        'oauth_signature_method': gcStore.oauth.oauth_signature_method
+        'consumer_key': gcStore.consumer_key,
+        'consumer_secret': gcStore.customer_secret
       }
     }).then(function(response){
       gcTopSoldItems = response.data.top_sellers;
@@ -160,26 +148,13 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
 
   };
 
+
   function gcGetDaySales() {
 
-    var today = new Date();
-    var date = today.getFullYear() + '-' + (parseInt(today.getMonth()) + 1) + '-' + today.getDate();
-
-    gcStore.request = WC_API.GET_SALES;
-
-    gcStore.oauth.oauth_nonce = Math.random().toString(36).slice(2);
-    gcStore.oauth.oauth_timestamp = Math.round((today).getTime() / 1000);
-    gcStore.filter += date;
-
-    // GC.com
-    // HTTP with OAuth
-    return $http.get(gcStore.http_method + gcStore.domain + gcStore.request + gcStore.filter, {
+    return $http.get(gcStore.http_method + gcStore.domain + WC_API.GET_SALES + gcStore.filter, {
       params: {
-        'oauth_consumer_key': gcStore.oauth.oauth_consumer_key,
-        'oauth_timestamp': gcStore.oauth.oauth_timestamp,
-        'oauth_nonce': gcStore.oauth.oauth_nonce,
-        'oauth_signature': this.getOauthSignature(gcStore),
-        'oauth_signature_method': gcStore.oauth.oauth_signature_method
+        'consumer_key': gcStore.consumer_key,
+        'consumer_secret': gcStore.customer_secret
       }
     }).then( function(response) {
       gcStoreTotal = parseFloat(response.data.sales.total_sales);
@@ -327,12 +302,12 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
-  if (window.cordova && window.cordova.plugins.Keyboard) {
-    cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-    cordova.plugins.Keyboard.disableScroll(true);
+    if (window.cordova && window.cordova.plugins.Keyboard) {
+      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+      cordova.plugins.Keyboard.disableScroll(true);
 
-  }
-  if (window.StatusBar) {
+    }
+    if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
