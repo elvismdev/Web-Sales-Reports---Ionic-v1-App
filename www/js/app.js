@@ -1,4 +1,4 @@
-angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages'])
+angular.module('wooshop', ['ionic', 'wooshop.controllers', 'ngMessages'])
 
 .constant('WC_API', (function() {
 
@@ -11,7 +11,7 @@ angular.module('wooshop', ['ionic', 'wooshop.controllers', 'lokijs', 'ngMessages
 
 })())
 
-.factory('wooFactory', function($http, $q, Loki, $state, WC_API, $ionicLoading, $rootScope, $timeout) {
+.factory('wooFactory', function($http, $q, $state, WC_API, $ionicLoading, $rootScope, $timeout) {
 
   var _db;
   var _stores;
